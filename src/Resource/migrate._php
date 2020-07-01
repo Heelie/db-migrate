@@ -1,0 +1,31 @@
+<?php
+
+use EasySwoole\DDL\Blueprint\Table;
+use EasySwoole\DDL\DDLBuilder;
+use EasySwoole\DDL\Enum\Character;
+use EasySwoole\DDL\Enum\Engine;
+
+/**
+ * migrate create
+ * Class MigratorClassName
+ */
+class MigratorClassName
+{
+    /**
+     * migrate run
+     * @return void
+     */
+    public function up()
+    {
+        //todo::create or update
+    }
+
+    /**
+     * migrate rollback
+     * @return void
+     */
+    public function down()
+    {
+        //todo::rollback
+    }
+}
