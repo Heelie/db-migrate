@@ -2,27 +2,19 @@
 
 namespace EasySwoole\Migrate\Command;
 
-use EasySwoole\Command\AbstractInterface\ResultInterface;
-use EasySwoole\EasySwoole\Command\AbstractCommand;
+use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
+use EasySwoole\Command\AbstractInterface\CommandInterface;
+use EasySwoole\Command\Color;
+use EasySwoole\Command\CommandManager;
 use EasySwoole\Migrate\Command\Migrate\CreateCommand;
 use EasySwoole\Migrate\Command\Migrate\RollbackCommand;
 use EasySwoole\Migrate\Command\Migrate\RunCommand;
-use EasySwoole\Migrate\Utility\Output;
+use InvalidArgumentException;
 use ReflectionClass;
 use Throwable;
 
-class MigrateCommand extends AbstractCommand
+class MigrateCommand implements CommandInterface
 {
-    protected $helps = [
-        'migrate [create] [*]               Create the migration repository',
-        'migrate [run]                      run all migrations',
-        'migrate [rollback] [*]             Rollback the last database migration',
-        'migrate [fresh]                    Drop all tables and re-run all migrations',
-        'migrate [refresh]                  Reset and re-run all migrations',
-        'migrate [reset]                    Rollback all database migrations',
-        'migrate [status]                   Show the status of each migration',
-    ];
-
     private $command = [
         'create'   => CreateCommand::class,
         'run'      => RunCommand::class,
@@ -34,17 +26,35 @@ class MigrateCommand extends AbstractCommand
         return 'migrate';
     }
 
-    public function exec($args): ResultInterface
+    public function desc(): string
     {
-        $arg = array_shift($args);
-        if (!isset($this->command[$arg])) {
-            return Output::outError('Migration command error', $this->helps);
-        }
+        return 'database migrate tool';
+    }
+
+    public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
+    {
+        $commandHelp->addAction('create', 'Create the migration repository');
+        $commandHelp->addAction('run', 'run all migrations');
+        $commandHelp->addAction('rollback', 'Rollback the last database migration');
+        $commandHelp->addAction('fresh', 'Drop all tables and re-run all migrations');
+        $commandHelp->addAction('refresh', 'Reset and re-run all migrations');
+        $commandHelp->addAction('reset', 'Rollback all database migrations');
+        $commandHelp->addAction('status', 'Show the status of each migration');
+        return $commandHelp;
+    }
+
+    public function exec(): ?string
+    {
         try {
+            $arg = CommandManager::getInstance()->getArg(0);
+            if (!isset($this->command[$arg])) {
+                throw new InvalidArgumentException('Migration command error');
+            }
             $ref = new ReflectionClass($this->command[$arg]);
-            return call_user_func([$ref->newInstance(), __FUNCTION__], $args);
+            return call_user_func([$ref->newInstance(), __FUNCTION__]);
         } catch (Throwable $throwable) {
-            return Output::outError($throwable->getMessage(), $this->helps);
+            return Color::error($throwable->getMessage()) . "\n" .
+                CommandManager::getInstance()->displayCommandHelp($this->commandName());
         }
     }
 
