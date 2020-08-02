@@ -37,7 +37,7 @@ class MigrateCommand implements CommandInterface
         try {
             $option = $this->getArg(0);
             if (isset($this->command[$option])) {
-                return $this->callOptionMethod($option, __FUNCTION__);
+                return $this->callOptionMethod($option, __FUNCTION__, [$commandHelp]);
             }
             $commandHelp->addAction('create', 'Create the migration repository');
             $commandHelp->addAction('run', 'run all migrations');
@@ -71,15 +71,16 @@ class MigrateCommand implements CommandInterface
     /**
      * @param $option
      * @param $method
+     * @param $args
      * @return mixed
      * @throws ReflectionException
      */
-    private function callOptionMethod($option, $method)
+    private function callOptionMethod($option, $method, $args)
     {
         if (!isset($this->command[$option])) {
             throw new InvalidArgumentException('Migration command error');
         }
         $ref = new ReflectionClass($this->command[$option]);
-        return call_user_func([$ref->newInstance(), $method]);
+        return call_user_func([$ref->newInstance(), $method], ...$args);
     }
 }
