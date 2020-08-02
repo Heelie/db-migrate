@@ -80,7 +80,7 @@ class MigrateCommand implements CommandInterface
      * @return mixed
      * @throws ReflectionException
      */
-    private function callOptionMethod($option, $method, $args)
+    private function callOptionMethod($option, $method, $args = [])
     {
         if (!isset($this->command[$option])) {
             throw new InvalidArgumentException('Migration command error');
