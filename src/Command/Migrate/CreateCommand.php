@@ -2,34 +2,51 @@
 
 namespace EasySwoole\Migrate\Command\Migrate;
 
+use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\ResultInterface;
-use EasySwoole\Migrate\Command\CommandInterface;
+use EasySwoole\Command\Color;
+use EasySwoole\Migrate\Command\MigrateCommand;
 use EasySwoole\Migrate\Utility\Output;
 use EasySwoole\Migrate\Utility\Util;
 use EasySwoole\Migrate\Validate\Validator;
 use EasySwoole\Utility\File;
 use InvalidArgumentException;
 
-class CreateCommand extends CommandInterface
+final class CreateCommand extends MigrateCommand
 {
-    /**
-     * @param array $args
-     * @return ResultInterface
-     * @throws \Throwable
-     */
-    public function exec($args): ResultInterface
+    public function commandName(): string
     {
-        if (empty($args) || is_null($args) || count($args) !== 1) {
+        return 'migrate create';
+    }
+
+    public function desc(): string
+    {
+        return 'database migrate create';
+    }
+
+    public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
+    {
+        $commandHelp->addAction('--table-name', 'migrate table name');
+        return $commandHelp;
+    }
+
+    /**
+     * @return ResultInterface|string|null
+     * @throws \Exception
+     */
+    public function exec(): ?string
+    {
+        if (empty($this->getArg(1)) && empty($this->getOpt('table-name'))) {
             throw new InvalidArgumentException('Wrong number of parameters. Hope to get a parameter of migrate name');
         }
-        $migrateName = array_shift($args);
+        $migrateName = $this->getOpt('table-name') ?: $this->getArg(1);
 
         $migrateClassName = $migrateName;
         if (!Validator::isHumpName($migrateName)) {
             $migrateClassName = Util::lineConvertHump($migrateName);
         }
 
-        if (Validator::ensureMigrationDoesntAlreadyExist($migrateClassName)){
+        if (Validator::ensureMigrationDoesntAlreadyExist($migrateClassName)) {
             throw new InvalidArgumentException(sprintf('class "%s" already exists', $migrateClassName));
         }
 
@@ -51,6 +68,7 @@ class CreateCommand extends CommandInterface
             throw new \Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
         }
 
-        return Output::outSucc(sprintf('Migration file "%s" created successfully', $migrateFilePath));
+        return Color::success(sprintf('Migration file "%s" created successfully', $migrateFilePath));
     }
+
 }
