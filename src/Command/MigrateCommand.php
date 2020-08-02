@@ -11,6 +11,7 @@ use EasySwoole\Migrate\Command\Migrate\RollbackCommand;
 use EasySwoole\Migrate\Command\Migrate\RunCommand;
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 use Throwable;
 
 class MigrateCommand implements CommandInterface
@@ -33,30 +34,52 @@ class MigrateCommand implements CommandInterface
 
     public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
     {
-        $commandHelp->addAction('create', 'Create the migration repository');
-        $commandHelp->addAction('run', 'run all migrations');
-        $commandHelp->addAction('rollback', 'Rollback the last database migration');
-        $commandHelp->addAction('fresh', 'Drop all tables and re-run all migrations');
-        $commandHelp->addAction('refresh', 'Reset and re-run all migrations');
-        $commandHelp->addAction('reset', 'Rollback all database migrations');
-        $commandHelp->addAction('status', 'Show the status of each migration');
+        try {
+            $option = $this->getArg(0);
+            if (isset($this->command[$option])) {
+                return $this->callOptionMethod($option, __FUNCTION__);
+            }
+            $commandHelp->addAction('create', 'Create the migration repository');
+            $commandHelp->addAction('run', 'run all migrations');
+            $commandHelp->addAction('rollback', 'Rollback the last database migration');
+            $commandHelp->addAction('fresh', 'Drop all tables and re-run all migrations');
+            $commandHelp->addAction('refresh', 'Reset and re-run all migrations');
+            $commandHelp->addAction('reset', 'Rollback all database migrations');
+            $commandHelp->addAction('status', 'Show the status of each migration');
+        } catch (Throwable $throwable) {
+            //do something
+        }
+
         return $commandHelp;
     }
 
     public function exec(): ?string
     {
         try {
-            $arg = CommandManager::getInstance()->getArg(0);
-            if (!isset($this->command[$arg])) {
-                throw new InvalidArgumentException('Migration command error');
-            }
-            $ref = new ReflectionClass($this->command[$arg]);
-            return call_user_func([$ref->newInstance(), __FUNCTION__]);
+            return $this->callOptionMethod($this->getArg(0), __FUNCTION__);
         } catch (Throwable $throwable) {
             return Color::error($throwable->getMessage()) . "\n" .
                 CommandManager::getInstance()->displayCommandHelp($this->commandName());
         }
     }
 
+    protected function getArg($name, $default = null)
+    {
+        return CommandManager::getInstance()->getArg($name, $default);
+    }
 
+    /**
+     * @param $option
+     * @param $method
+     * @return mixed
+     * @throws ReflectionException
+     */
+    private function callOptionMethod($option, $method)
+    {
+        if (!isset($this->command[$option])) {
+            throw new InvalidArgumentException('Migration command error');
+        }
+        $ref = new ReflectionClass($this->command[$option]);
+        return call_user_func([$ref->newInstance(), $method]);
+    }
 }
