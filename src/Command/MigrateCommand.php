@@ -68,6 +68,11 @@ class MigrateCommand implements CommandInterface
         return CommandManager::getInstance()->getArg($name, $default);
     }
 
+    protected function getOpt($name, $default = null)
+    {
+        return CommandManager::getInstance()->getOpt($name, $default);
+    }
+
     /**
      * @param $option
      * @param $method
