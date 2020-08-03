@@ -2,19 +2,19 @@
 
 namespace EasySwoole\Migrate\Command\Migrate;
 
-use EasySwoole\Command\AbstractInterface\ResultInterface;
+use EasySwoole\Command\Color;
 use EasySwoole\DDL\Blueprint\Table;
 use EasySwoole\DDL\DDLBuilder;
 use EasySwoole\DDL\Enum\Character;
 use EasySwoole\DDL\Enum\Engine;
-use EasySwoole\Migrate\Command\CommandInterface;
+use EasySwoole\Migrate\Command\MigrateCommand;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Output;
 use EasySwoole\Migrate\Utility\Util;
 use EasySwoole\Spl\SplArray;
 use RuntimeException;
 
-class RunCommand extends CommandInterface
+final class RunCommand extends MigrateCommand
 {
     private $dbFacade;
 
@@ -26,11 +26,14 @@ class RunCommand extends CommandInterface
         $this->ensureDatabaseTableAlreadyExist();
     }
 
-    public function exec($args = []): ResultInterface
+    /**
+     * @return string|null
+     */
+    public function exec(): ?string
     {
         $waitMigrationFiles = $this->getMigrationFiles();
         if (empty($waitMigrationFiles)) {
-            return Output::outSucc('No tables need to be migrated.');
+            return Color::success('No tables need to be migrated.');
         }
         sort($waitMigrationFiles);
 
@@ -48,12 +51,12 @@ class RunCommand extends CommandInterface
                     $this->dbFacade->query($noteSql);
                 }
             } catch (\Throwable $e) {
-                return Output::outError($e->getMessage());
+                return Color::error($e->getMessage());
             }
             $outMsg[] = "\33[32mMigrated:  \33[0m{$file} (".round(microtime(true) - $startTime, 2)." seconds)";
         }
         $outMsg[] = "\33[1;32mMigration table successfully.\e[0m";
-        return Output::output(implode(PHP_EOL, $outMsg));
+        return Color::normal(implode(PHP_EOL, $outMsg));
     }
 
     private function getMigrationFiles()

@@ -6,10 +6,10 @@ use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\ResultInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Migrate\Command\MigrateCommand;
-use EasySwoole\Migrate\Utility\Output;
 use EasySwoole\Migrate\Utility\Util;
 use EasySwoole\Migrate\Validate\Validator;
 use EasySwoole\Utility\File;
+use Exception;
 use InvalidArgumentException;
 
 final class CreateCommand extends MigrateCommand
@@ -32,7 +32,7 @@ final class CreateCommand extends MigrateCommand
 
     /**
      * @return ResultInterface|string|null
-     * @throws \Exception
+     * @throws Exception
      */
     public function exec(): ?string
     {
@@ -59,13 +59,13 @@ final class CreateCommand extends MigrateCommand
         // }
 
         if (!File::touchFile($migrateFilePath, false)) {
-            throw new \Exception(sprintf('Migration file "%s" creation failed, file already exists or directory is not writable', $migrateFilePath));
+            throw new Exception(sprintf('Migration file "%s" creation failed, file already exists or directory is not writable', $migrateFilePath));
         }
 
         $contents = str_replace(Util::MIGRATE_TEMPLATE_CLASS_NAME, $migrateClassName, file_get_contents(Util::MIGRATE_TEMPLATE));
 
         if (file_put_contents($migrateFilePath, $contents) === false) {
-            throw new \Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
+            throw new Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
         }
 
         return Color::success(sprintf('Migration file "%s" created successfully', $migrateFilePath));
