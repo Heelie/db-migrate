@@ -8,14 +8,14 @@ use EasySwoole\DDL\Enum\Character;
 use EasySwoole\DDL\Enum\Engine;
 
 /**
- * migrate create
+ * migrate basic
  * Class MigratorClassName
  */
 class MigratorClassName
 {
     /**
      * migrate run
-     * @return void
+     * @return string
      */
     public function up()
     {
@@ -24,7 +24,7 @@ class MigratorClassName
 
     /**
      * migrate rollback
-     * @return void
+     * @return string
      */
     public function down()
     {
