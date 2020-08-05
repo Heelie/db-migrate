@@ -8,6 +8,11 @@ use InvalidArgumentException;
 
 class Validator
 {
+    public static function isValidName(string $str): bool
+    {
+        return boolval(preg_match('/^(?!_)\w+$/', $str));
+    }
+
     public static function isHumpName(string $str): bool
     {
         return boolval(preg_match('/^([A-Z][a-z0-9]+)+$/', $str));
