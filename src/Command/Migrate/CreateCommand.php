@@ -26,7 +26,10 @@ final class CreateCommand extends MigrateCommand
 
     public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
     {
-        $commandHelp->addAction('--table-name', 'migrate table name');
+        $commandHelp->addActionOpt('--alter', 'generate alter migrate template');
+        $commandHelp->addActionOpt('--create', 'generate create migrate template');
+        $commandHelp->addActionOpt('--drop', 'generate drop migrate template');
+        $commandHelp->addActionOpt('--table', 'generate basic migrate template');
         return $commandHelp;
     }
 
@@ -36,19 +39,13 @@ final class CreateCommand extends MigrateCommand
      */
     public function exec(): ?string
     {
-        if (empty($this->getArg(1)) && empty($this->getOpt('table-name'))) {
+        list($migrateName,$migrateTemplate) = $this->getMigrateName();
+
+        if (empty($migrateName)) {
             throw new InvalidArgumentException('Wrong number of parameters. Hope to get a parameter of migrate name');
         }
-        $migrateName = $this->getOpt('table-name') ?: $this->getArg(1);
 
-        $migrateClassName = $migrateName;
-        if (!Validator::isHumpName($migrateName)) {
-            $migrateClassName = Util::lineConvertHump($migrateName);
-        }
-
-        if (Validator::ensureMigrationDoesntAlreadyExist($migrateClassName)) {
-            throw new InvalidArgumentException(sprintf('class "%s" already exists', $migrateClassName));
-        }
+        $migrateClassName = $this->checkName($migrateName);
 
         $migrateFileName = Util::genMigrateClassName($migrateName);
         // $migratePath     = self::MIGRATE_PATH;
@@ -62,7 +59,7 @@ final class CreateCommand extends MigrateCommand
             throw new Exception(sprintf('Migration file "%s" creation failed, file already exists or directory is not writable', $migrateFilePath));
         }
 
-        $contents = str_replace(Util::MIGRATE_TEMPLATE_CLASS_NAME, $migrateClassName, file_get_contents(Util::MIGRATE_TEMPLATE));
+        $contents = str_replace(Util::MIGRATE_TEMPLATE_CLASS_NAME, $migrateClassName, file_get_contents($migrateTemplate));
 
         if (file_put_contents($migrateFilePath, $contents) === false) {
             throw new Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
@@ -71,4 +68,40 @@ final class CreateCommand extends MigrateCommand
         return Color::success(sprintf('Migration file "%s" created successfully', $migrateFilePath));
     }
 
+    private function getMigrateName()
+    {
+        if ($migrateName = $this->getOpt('create')) {
+            return [$migrateName, Util::MIGRATE_CREATE_TEMPLATE];
+        } elseif ($migrateName = $this->getOpt('alter')) {
+            return [$migrateName, Util::MIGRATE_ALTER_TEMPLATE];
+        } elseif ($migrateName = $this->getOpt('drop')) {
+            return [$migrateName, Util::MIGRATE_DROP_TEMPLATE];
+        } elseif ($migrateName = $this->getOpt('table')) {
+            return [$migrateName, Util::MIGRATE_TEMPLATE];
+        } elseif ($migrateName = $this->getArg(1)) {
+            return [$migrateName, Util::MIGRATE_TEMPLATE];
+        }
+        return [null, null];
+    }
+
+    private function checkName($migrateName)
+    {
+        if (!Validator::isValidName($migrateName)) {
+            throw new InvalidArgumentException('The migrate table name can only consist of letters, numbers and underscores, and cannot start with an underscore');
+        }
+
+        if (!Validator::isHumpName($migrateName)) {
+            $migrateName = Util::lineConvertHump($migrateName);
+        }
+
+        if (strpos($migrateName,'_') === false){
+            $migrateName = ucfirst($migrateName);
+        }
+
+        if (Validator::ensureMigrationDoesntAlreadyExist($migrateName)) {
+            throw new InvalidArgumentException(sprintf('class "%s" already exists', $migrateName));
+        }
+
+        return $migrateName;
+    }
 }
