@@ -18,8 +18,6 @@ final class RunCommand extends MigrateCommand
 {
     private $dbFacade;
 
-    const DEFAULT_MIGRATE_TABLE = 'migrations';
-
     public function __construct()
     {
         $this->dbFacade = DatabaseFacade::getInstance();
@@ -47,7 +45,7 @@ final class RunCommand extends MigrateCommand
                 $ref = new \ReflectionClass($className);
                 $sql = call_user_func([$ref->newInstance(), 'up']);
                 if ($this->dbFacade->query($sql)) {
-                    $noteSql = 'insert into ' . self::DEFAULT_MIGRATE_TABLE . ' (`migration`,`batch`) VALUE (\'' . $file . '\',\'' . $batchNo . '\')';
+                    $noteSql = 'insert into ' . Util::DEFAULT_MIGRATE_TABLE . ' (`migration`,`batch`) VALUE (\'' . $file . '\',\'' . $batchNo . '\')';
                     $this->dbFacade->query($noteSql);
                 }
             } catch (\Throwable $e) {
@@ -66,7 +64,7 @@ final class RunCommand extends MigrateCommand
         foreach ($allMigrationFiles as $key => $file) {
             $allMigrationFiles[$key] = basename($file, '.php');
         }
-        $alreadyMigrationFiles = $this->dbFacade->query('select `migration` from ' . self::DEFAULT_MIGRATE_TABLE . ' order by batch asc,migration asc');
+        $alreadyMigrationFiles = $this->dbFacade->query('select `migration` from ' . Util::DEFAULT_MIGRATE_TABLE . ' order by batch asc,migration asc');
         $alreadyMigrationFiles = array_column($alreadyMigrationFiles, 'migration');
 
         foreach ($allMigrationFiles as $key => $file) {
@@ -91,7 +89,7 @@ final class RunCommand extends MigrateCommand
     private function ensureDatabaseTableAlreadyExist()
     {
         $this->getDatabaseConfig();
-        $tableExists = $this->dbFacade->query('SHOW TABLES LIKE "' . self::DEFAULT_MIGRATE_TABLE . '"');
+        $tableExists = $this->dbFacade->query('SHOW TABLES LIKE "' . Util::DEFAULT_MIGRATE_TABLE . '"');
         if (empty($tableExists)) {
             $this->createDefaultMigrateTable();
         }
@@ -99,13 +97,14 @@ final class RunCommand extends MigrateCommand
 
     private function createDefaultMigrateTable()
     {
-        $sql = DDLBuilder::table(self::DEFAULT_MIGRATE_TABLE, function (Table $table) {
+        $sql = DDLBuilder::table(Util::DEFAULT_MIGRATE_TABLE, function (Table $table) {
             $table->setIfNotExists()->setTableAutoIncrement(1);
             $table->setTableEngine(Engine::INNODB);
             $table->setTableCharset(Character::UTF8MB4_GENERAL_CI);
             $table->colInt('id', 11)->setIsUnsigned()->setIsAutoIncrement()->setIsPrimaryKey();
             $table->colVarChar('migration', 255)->setColumnCharset(Character::UTF8MB4_GENERAL_CI)->setIsNotNull();
             $table->colInt('batch', 11)->setIsNotNull();
+            $table->normal('ind_batch', 'batch');
         });
         if ($this->dbFacade->query($sql) === false) {
             throw new RuntimeException('Create default migrate table fail.' . PHP_EOL . ' SQL: ' . $sql);
@@ -117,7 +116,7 @@ final class RunCommand extends MigrateCommand
      */
     public function getBatchNo()
     {
-        $maxResult = $this->dbFacade->query('select max(`batch`) as max_batch from ' . self::DEFAULT_MIGRATE_TABLE);
+        $maxResult = $this->dbFacade->query('select max(`batch`) as max_batch from ' . Util::DEFAULT_MIGRATE_TABLE);
         return intval($maxResult[0]['max_batch']) + 1;
     }
 
