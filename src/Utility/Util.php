@@ -12,6 +12,9 @@ use EasySwoole\Migrate\Validate\Validator;
  */
 class Util
 {
+    /** @var string default migrate table name */
+    const DEFAULT_MIGRATE_TABLE = 'migrations';
+
     /** @var string migrate path */
     const MIGRATE_PATH = EASYSWOOLE_ROOT . '/database/migrates/';
 
@@ -29,6 +32,9 @@ class Util
 
     /** @var string migrate template class name */
     const MIGRATE_TEMPLATE_CLASS_NAME = 'MigratorClassName';
+
+    /** @var string migrate template table name */
+    const MIGRATE_TEMPLATE_TABLE_NAME = 'MigratorTableName';
 
     /**
      * @param string $str
