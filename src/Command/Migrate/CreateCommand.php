@@ -59,7 +59,7 @@ final class CreateCommand extends MigrateCommand
             throw new Exception(sprintf('Migration file "%s" creation failed, file already exists or directory is not writable', $migrateFilePath));
         }
 
-        $contents = str_replace(Util::MIGRATE_TEMPLATE_CLASS_NAME, $migrateClassName, file_get_contents($migrateTemplate));
+        $contents = str_replace([Util::MIGRATE_TEMPLATE_CLASS_NAME,Util::MIGRATE_TEMPLATE_TABLE_NAME], $migrateClassName, file_get_contents($migrateTemplate));
 
         if (file_put_contents($migrateFilePath, $contents) === false) {
             throw new Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
