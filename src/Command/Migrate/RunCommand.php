@@ -38,7 +38,7 @@ final class RunCommand extends MigrateCommand
         $outMsg = [];
         $batchNo = $this->getBatchNo();
         foreach ($waitMigrationFiles as $file) {
-            $outMsg[] = "\33[33mMigrating: \33[0m{$file}";
+            $outMsg[] = "<brown>Migrating: </brown>{$file}";
             $startTime = microtime(true);
             $className = Util::migrateFileNameToClassName($file);
             try {
@@ -51,10 +51,10 @@ final class RunCommand extends MigrateCommand
             } catch (\Throwable $e) {
                 return Color::error($e->getMessage());
             }
-            $outMsg[] = "\33[32mMigrated:  \33[0m{$file} (".round(microtime(true) - $startTime, 2)." seconds)";
+            $outMsg[] = "<green>Migrated:  </green>{$file} (" . round(microtime(true) - $startTime, 2) . " seconds)";
         }
-        $outMsg[] = "\33[1;32mMigration table successfully.\e[0m";
-        return Color::normal(implode(PHP_EOL, $outMsg));
+        $outMsg[] = "<success>Migration table successfully.</success>";
+        return Color::render(implode(PHP_EOL, $outMsg));
     }
 
     private function getMigrationFiles()
