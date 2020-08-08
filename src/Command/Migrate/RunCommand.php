@@ -3,7 +3,7 @@
 namespace EasySwoole\Migrate\Command\Migrate;
 
 use EasySwoole\Command\Color;
-use EasySwoole\DDL\Blueprint\Table;
+use EasySwoole\DDL\Blueprint\Create\Table as CreateTable;
 use EasySwoole\DDL\DDLBuilder;
 use EasySwoole\DDL\Enum\Character;
 use EasySwoole\DDL\Enum\Engine;
@@ -97,7 +97,7 @@ final class RunCommand extends MigrateCommand
 
     private function createDefaultMigrateTable()
     {
-        $sql = DDLBuilder::table(Util::DEFAULT_MIGRATE_TABLE, function (Table $table) {
+        $sql = DDLBuilder::create(Util::DEFAULT_MIGRATE_TABLE, function (CreateTable $table) {
             $table->setIfNotExists()->setTableAutoIncrement(1);
             $table->setTableEngine(Engine::INNODB);
             $table->setTableCharset(Character::UTF8MB4_GENERAL_CI);
