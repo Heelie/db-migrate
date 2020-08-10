@@ -9,7 +9,6 @@ use EasySwoole\DDL\Enum\Character;
 use EasySwoole\DDL\Enum\Engine;
 use EasySwoole\Migrate\Command\MigrateCommand;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
-use EasySwoole\Migrate\Utility\Output;
 use EasySwoole\Migrate\Utility\Util;
 use EasySwoole\Spl\SplArray;
 use RuntimeException;
