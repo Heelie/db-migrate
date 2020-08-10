@@ -2,6 +2,7 @@
 
 namespace EasySwoole\Migrate\Command\Migrate;
 
+use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\DDL\Blueprint\Create\Table as CreateTable;
 use EasySwoole\DDL\DDLBuilder;
@@ -21,6 +22,23 @@ final class RunCommand extends MigrateCommand
     {
         $this->dbFacade = DatabaseFacade::getInstance();
         $this->ensureDatabaseTableAlreadyExist();
+    }
+
+    public function commandName(): string
+    {
+        return 'migrate run';
+    }
+
+    public function desc(): string
+    {
+        return 'database migrate run';
+    }
+
+    public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
+    {
+        $commandHelp->addActionOpt('--batch', 'rollback migrate batch no');
+        $commandHelp->addActionOpt('--id', 'rollback migrate id');
+        return $commandHelp;
     }
 
     /**
