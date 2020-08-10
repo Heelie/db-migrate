@@ -42,8 +42,8 @@ class MigrateCommand implements CommandInterface
             $commandHelp->addAction('create', 'Create the migration repository');
             $commandHelp->addAction('run', 'run all migrations');
             $commandHelp->addAction('rollback', 'Rollback the last database migration');
-            $commandHelp->addAction('fresh', 'Drop all tables and re-run all migrations');
-            $commandHelp->addAction('refresh', 'Reset and re-run all migrations');
+            // $commandHelp->addAction('fresh', 'Drop all tables and re-run all migrations');
+            // $commandHelp->addAction('refresh', 'Reset and re-run all migrations');
             $commandHelp->addAction('reset', 'Rollback all database migrations');
             $commandHelp->addAction('status', 'Show the status of each migration');
         } catch (Throwable $throwable) {
