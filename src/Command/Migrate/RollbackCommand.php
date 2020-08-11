@@ -3,14 +3,14 @@
 namespace EasySwoole\Migrate\Command\Migrate;
 
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
-use EasySwoole\Command\AbstractInterface\ResultInterface;
+use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Migrate\Command\MigrateCommand;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
 use Exception;
 
-final class RollbackCommand extends MigrateCommand
+final class RollbackCommand extends MigrateCommand implements CommandInterface
 {
     private $dbFacade;
 
@@ -37,8 +37,7 @@ final class RollbackCommand extends MigrateCommand
     }
 
     /**
-     * @return ResultInterface|string|null
-     * @throws Exception
+     * @return string|null
      */
     public function exec(): ?string
     {
