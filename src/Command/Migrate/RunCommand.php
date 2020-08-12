@@ -3,6 +3,7 @@
 namespace EasySwoole\Migrate\Command\Migrate;
 
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
+use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\DDL\Blueprint\Create\Table as CreateTable;
 use EasySwoole\DDL\DDLBuilder;
@@ -14,7 +15,7 @@ use EasySwoole\Migrate\Utility\Util;
 use EasySwoole\Spl\SplArray;
 use RuntimeException;
 
-final class RunCommand extends MigrateCommand
+final class RunCommand extends MigrateCommand implements CommandInterface
 {
     private $dbFacade;
 
