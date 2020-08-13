@@ -7,6 +7,7 @@ use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Command\CommandManager;
 use EasySwoole\Migrate\Command\Migrate\CreateCommand;
+use EasySwoole\Migrate\Command\Migrate\GenerateCommand;
 use EasySwoole\Migrate\Command\Migrate\ResetCommand;
 use EasySwoole\Migrate\Command\Migrate\RollbackCommand;
 use EasySwoole\Migrate\Command\Migrate\RunCommand;
@@ -19,6 +20,7 @@ class MigrateCommand implements CommandInterface
 {
     private $command = [
         'create'   => CreateCommand::class,
+        'generate' => GenerateCommand::class,
         'reset'    => ResetCommand::class,
         'rollback' => RollbackCommand::class,
         'run'      => RunCommand::class,
@@ -42,6 +44,7 @@ class MigrateCommand implements CommandInterface
                 return $this->callOptionMethod($option, __FUNCTION__, [$commandHelp]);
             }
             $commandHelp->addAction('create', 'Create the migration repository');
+            $commandHelp->addAction('generate', 'Generate migration repository for existing tables');
             $commandHelp->addAction('run', 'run all migrations');
             $commandHelp->addAction('rollback', 'Rollback the last database migration');
             // $commandHelp->addAction('fresh', 'Drop all tables and re-run all migrations');
