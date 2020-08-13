@@ -3,6 +3,7 @@
 namespace EasySwoole\Migrate\Command\Migrate;
 
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
+use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\AbstractInterface\ResultInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Migrate\Command\MigrateCommand;
@@ -12,7 +13,7 @@ use EasySwoole\Utility\File;
 use Exception;
 use InvalidArgumentException;
 
-final class CreateCommand extends MigrateCommand
+final class CreateCommand extends MigrateCommand implements CommandInterface
 {
     public function commandName(): string
     {
@@ -39,7 +40,7 @@ final class CreateCommand extends MigrateCommand
      */
     public function exec(): ?string
     {
-        list($migrateName,$migrateTemplate) = $this->getMigrateName();
+        [$migrateName,$migrateTemplate] = $this->getMigrateName();
 
         if (empty($migrateName)) {
             throw new InvalidArgumentException('Wrong number of parameters. Hope to get a parameter of migrate name');
