@@ -21,6 +21,7 @@
         "php": ">=7.1.0",
         "easyswoole/spl": "^1.0",
         "easyswoole/ddl": "^1.0",
+        "easyswoole/command": "^1.1",
         "easyswoole/utility": "^1.0"
     },
     "autoload": {
