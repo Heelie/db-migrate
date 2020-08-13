@@ -7,6 +7,7 @@ use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Command\CommandManager;
 use EasySwoole\Migrate\Command\Migrate\CreateCommand;
+use EasySwoole\Migrate\Command\Migrate\ResetCommand;
 use EasySwoole\Migrate\Command\Migrate\RollbackCommand;
 use EasySwoole\Migrate\Command\Migrate\RunCommand;
 use InvalidArgumentException;
@@ -18,8 +19,9 @@ class MigrateCommand implements CommandInterface
 {
     private $command = [
         'create'   => CreateCommand::class,
-        'run'      => RunCommand::class,
+        'reset'    => ResetCommand::class,
         'rollback' => RollbackCommand::class,
+        'run'      => RunCommand::class,
     ];
 
     public function commandName(): string
