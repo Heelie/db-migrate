@@ -3,6 +3,7 @@
 namespace EasySwoole\Migrate\Command\Migrate;
 
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
+use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\AbstractInterface\ResultInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Command\CommandManager;
@@ -11,7 +12,7 @@ use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
 use Exception;
 
-final class ResetCommand extends MigrateCommand
+final class ResetCommand extends MigrateCommand implements CommandInterface
 {
     private $dbFacade;
 
