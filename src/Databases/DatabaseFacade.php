@@ -8,8 +8,10 @@
 namespace EasySwoole\Migrate\Databases;
 
 use EasySwoole\Migrate\Databases\AbstractInterface\DatabaseAbstract;
+use EasySwoole\Migrate\Databases\AbstractInterface\DatabaseInterface;
 use EasySwoole\Migrate\Databases\Database\Mysql;
 use EasySwoole\Spl\SplArray;
+use ReflectionClass;
 use RuntimeException;
 use Throwable;
 
@@ -75,7 +77,7 @@ class DatabaseFacade extends DatabaseAbstract
         $default = $this->config->get('default');
         if (!static::$database) {
             try {
-                $ref = new \ReflectionClass($this->databases[$default]);
+                $ref = new ReflectionClass($this->databases[$default]);
                 /** @var DatabaseInterface $database instance */
                 static::$database = $ref->newInstance();
             } catch (Throwable $e) {
