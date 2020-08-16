@@ -2,7 +2,7 @@
 
 namespace EasySwoole\Migrate\Databases\Database;
 
-use EasySwoole\Migrate\Databases\DatabaseInterface;
+use EasySwoole\Migrate\Databases\AbstractInterface\DatabaseInterface;
 use EasySwoole\Spl\SplArray;
 use mysqli;
 use RuntimeException;

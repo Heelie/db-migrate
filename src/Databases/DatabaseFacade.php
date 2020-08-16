@@ -7,12 +7,13 @@
 
 namespace EasySwoole\Migrate\Databases;
 
+use EasySwoole\Migrate\Databases\AbstractInterface\DatabaseAbstract;
 use EasySwoole\Migrate\Databases\Database\Mysql;
 use EasySwoole\Spl\SplArray;
 use RuntimeException;
 use Throwable;
 
-class DatabaseFacade extends Database
+class DatabaseFacade extends DatabaseAbstract
 {
     private static $instance;
 
