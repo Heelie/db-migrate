@@ -1,11 +1,10 @@
 <?php
 
-namespace EasySwoole\Migrate\Databases;
+namespace EasySwoole\Migrate\Databases\AbstractInterface;
 
-use EasySwoole\Migrate\Databases\Database\Mysql;
 use EasySwoole\Spl\SplArray;
 
-abstract class Database
+abstract class DatabaseAbstract
 {
     /** @var SplArray */
     protected $config = null;

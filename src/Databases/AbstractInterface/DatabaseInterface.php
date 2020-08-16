@@ -1,6 +1,6 @@
 <?php
 
-namespace EasySwoole\Migrate\Databases;
+namespace EasySwoole\Migrate\Databases\AbstractInterface;
 
 use EasySwoole\Spl\SplArray;
 
