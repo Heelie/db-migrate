@@ -32,14 +32,31 @@ final class GenerateCommand extends MigrateCommand implements CommandInterface
     public function exec(): ?string
     {
         try {
-            $existsTables = $this->getExistsTables();
-            $ignoreTables = $this->getExistsTables();
-            $allTables = array_diff($existsTables, $ignoreTables);
-            //todo
+            // need to migrate
+            $migrateTables = $this->getExistsTables();
+            if ($specifiedTables = $this->getOpt('tables')) {
+                $specifiedTables = explode(',', $specifiedTables);
+                array_walk($specifiedTables, function ($tableName) use ($migrateTables) {
+                    if (!in_array($tableName, $migrateTables)) {
+                        throw new RuntimeException(sprintf('Table: "%s" not found.', $tableName));
+                    }
+                });
+                $migrateTables = $specifiedTables;
+            }
+
+            // ignore table
+            $ignoreTables = $this->getIgnoreTables();
+            $allTables    = array_diff($migrateTables, $ignoreTables);
+            if (empty($allTables)) {
+                throw new RuntimeException('No table found.');
+            }
+            array_walk($allTables, function ($tableName) {
+                var_dump($tableName);
+            });
         } catch (\Throwable $throwable) {
             return Color::error($throwable->getMessage());
         }
-        return Color::success('All table migration repository generation completed');
+        return Color::success('All table migration repository generation completed.');
     }
 
     /**
@@ -51,7 +68,7 @@ final class GenerateCommand extends MigrateCommand implements CommandInterface
     {
         $result = DatabaseFacade::getInstance()->query('SHOW TABLES;');
         if (empty($result)) {
-            throw new RuntimeException('No table found');
+            throw new RuntimeException('No table found.');
         }
         return array_map('current', $result);
     }
