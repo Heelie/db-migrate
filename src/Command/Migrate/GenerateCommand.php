@@ -4,8 +4,11 @@ namespace EasySwoole\Migrate\Command\Migrate;
 
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\CommandInterface;
+use EasySwoole\Command\Color;
 use EasySwoole\Migrate\Command\MigrateCommand;
+use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
+use RuntimeException;
 
 final class GenerateCommand extends MigrateCommand implements CommandInterface
 {
@@ -28,7 +31,29 @@ final class GenerateCommand extends MigrateCommand implements CommandInterface
 
     public function exec(): ?string
     {
-        // TODO: Implement exec() method.
+        try {
+            $existsTables = $this->getExistsTables();
+            $ignoreTables = $this->getExistsTables();
+            $allTables = array_diff($existsTables, $ignoreTables);
+            //todo
+        } catch (\Throwable $throwable) {
+            return Color::error($throwable->getMessage());
+        }
+        return Color::success('All table migration repository generation completed');
+    }
+
+    /**
+     * already exists tables
+     *
+     * @return array
+     */
+    protected function getExistsTables()
+    {
+        $result = DatabaseFacade::getInstance()->query('SHOW TABLES;');
+        if (empty($result)) {
+            throw new RuntimeException('No table found');
+        }
+        return array_map('current', $result);
     }
 
     /**
