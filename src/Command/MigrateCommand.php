@@ -6,6 +6,7 @@ use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Command\CommandManager;
+use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
 use EasySwoole\Migrate\Command\Migrate\CreateCommand;
 use EasySwoole\Migrate\Command\Migrate\GenerateCommand;
 use EasySwoole\Migrate\Command\Migrate\ResetCommand;
@@ -16,7 +17,7 @@ use ReflectionClass;
 use ReflectionException;
 use Throwable;
 
-class MigrateCommand implements CommandInterface
+class MigrateCommand extends CommandAbstract
 {
     private $command = [
         'create'   => CreateCommand::class,
@@ -66,16 +67,6 @@ class MigrateCommand implements CommandInterface
             return Color::error($throwable->getMessage()) . "\n" .
                 CommandManager::getInstance()->displayCommandHelp($this->commandName());
         }
-    }
-
-    protected function getArg($name, $default = null)
-    {
-        return CommandManager::getInstance()->getArg($name, $default);
-    }
-
-    protected function getOpt($name, $default = null)
-    {
-        return CommandManager::getInstance()->getOpt($name, $default);
     }
 
     /**
