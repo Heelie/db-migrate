@@ -90,7 +90,7 @@ final class CreateCommand extends CommandAbstract
     private function checkName($migrateName)
     {
         if (!Validator::isValidName($migrateName)) {
-            throw new InvalidArgumentException('The migrate table name can only consist of letters, numbers and underscores, and cannot start with an underscore');
+            throw new InvalidArgumentException('The migrate table name can only consist of letters, numbers and underscores, and cannot start with numbers and underscore');
         }
 
         if (!Validator::isHumpName($migrateName)) {
@@ -101,7 +101,7 @@ final class CreateCommand extends CommandAbstract
             $migrateName = ucfirst($migrateName);
         }
 
-        if (Validator::ensureMigrationDoesntAlreadyExist($migrateName)) {
+        if (Validator::validClass($migrateName, 'migrate')) {
             throw new InvalidArgumentException(sprintf('class "%s" already exists', $migrateName));
         }
 
