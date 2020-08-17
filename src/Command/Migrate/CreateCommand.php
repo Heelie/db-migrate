@@ -6,6 +6,7 @@ use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\AbstractInterface\ResultInterface;
 use EasySwoole\Command\Color;
+use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
 use EasySwoole\Migrate\Command\MigrateCommand;
 use EasySwoole\Migrate\Utility\Util;
 use EasySwoole\Migrate\Validate\Validator;
@@ -13,7 +14,7 @@ use EasySwoole\Utility\File;
 use Exception;
 use InvalidArgumentException;
 
-final class CreateCommand extends MigrateCommand implements CommandInterface
+final class CreateCommand extends CommandAbstract
 {
     public function commandName(): string
     {
@@ -40,7 +41,7 @@ final class CreateCommand extends MigrateCommand implements CommandInterface
      */
     public function exec(): ?string
     {
-        [$migrateName,$migrateTemplate] = $this->getMigrateName();
+        [$migrateName, $migrateTemplate] = $this->getMigrateName();
 
         if (empty($migrateName)) {
             throw new InvalidArgumentException('Wrong number of parameters. Hope to get a parameter of migrate name');
@@ -60,7 +61,7 @@ final class CreateCommand extends MigrateCommand implements CommandInterface
             throw new Exception(sprintf('Migration file "%s" creation failed, file already exists or directory is not writable', $migrateFilePath));
         }
 
-        $contents = str_replace([Util::MIGRATE_TEMPLATE_CLASS_NAME,Util::MIGRATE_TEMPLATE_TABLE_NAME], $migrateClassName, file_get_contents($migrateTemplate));
+        $contents = str_replace([Util::MIGRATE_TEMPLATE_CLASS_NAME, Util::MIGRATE_TEMPLATE_TABLE_NAME], $migrateClassName, file_get_contents($migrateTemplate));
 
         if (file_put_contents($migrateFilePath, $contents) === false) {
             throw new Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
@@ -95,7 +96,7 @@ final class CreateCommand extends MigrateCommand implements CommandInterface
             $migrateName = Util::lineConvertHump($migrateName);
         }
 
-        if (strpos($migrateName,'_') === false){
+        if (strpos($migrateName, '_') === false) {
             $migrateName = ucfirst($migrateName);
         }
 

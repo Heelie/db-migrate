@@ -5,12 +5,13 @@ namespace EasySwoole\Migrate\Command\Migrate;
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
+use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
 use EasySwoole\Migrate\Command\MigrateCommand;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
 use RuntimeException;
 
-final class GenerateCommand extends MigrateCommand implements CommandInterface
+final class GenerateCommand extends CommandAbstract
 {
     public function commandName(): string
     {

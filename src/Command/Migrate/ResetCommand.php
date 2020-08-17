@@ -7,12 +7,13 @@ use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\AbstractInterface\ResultInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Command\CommandManager;
+use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
 use EasySwoole\Migrate\Command\MigrateCommand;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
 use Exception;
 
-final class ResetCommand extends MigrateCommand implements CommandInterface
+final class ResetCommand extends CommandAbstract
 {
     private $dbFacade;
 
@@ -47,7 +48,7 @@ final class ResetCommand extends MigrateCommand implements CommandInterface
         $outMsg = [];
 
         foreach ($waitRollbackFiles as $id => $file) {
-            $outMsg[] = "<brown>Migrating: </brown>{$file}";
+            $outMsg[]  = "<brown>Migrating: </brown>{$file}";
             $startTime = microtime(true);
             $className = Util::migrateFileNameToClassName($file);
             try {
@@ -68,8 +69,8 @@ final class ResetCommand extends MigrateCommand implements CommandInterface
 
     private function getRollbackFiles()
     {
-        $tableName = Util::DEFAULT_MIGRATE_TABLE;
-        $sql = "select `id`,`migration` from `{$tableName}` order by `id` desc ";
+        $tableName          = Util::DEFAULT_MIGRATE_TABLE;
+        $sql                = "select `id`,`migration` from `{$tableName}` order by `id` desc ";
         $readyRollbackFiles = $this->dbFacade->query($sql);
         if (empty($readyRollbackFiles)) {
             return Color::success('No files to be rollback.');

@@ -9,13 +9,14 @@ use EasySwoole\DDL\Blueprint\Create\Table as CreateTable;
 use EasySwoole\DDL\DDLBuilder;
 use EasySwoole\DDL\Enum\Character;
 use EasySwoole\DDL\Enum\Engine;
+use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
 use EasySwoole\Migrate\Command\MigrateCommand;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
 use EasySwoole\Spl\SplArray;
 use RuntimeException;
 
-final class RunCommand extends MigrateCommand implements CommandInterface
+final class RunCommand extends CommandAbstract
 {
     private $dbFacade;
 
@@ -53,10 +54,10 @@ final class RunCommand extends MigrateCommand implements CommandInterface
         }
         sort($waitMigrationFiles);
 
-        $outMsg = [];
+        $outMsg  = [];
         $batchNo = $this->getBatchNo();
         foreach ($waitMigrationFiles as $file) {
-            $outMsg[] = "<brown>Migrating: </brown>{$file}";
+            $outMsg[]  = "<brown>Migrating: </brown>{$file}";
             $startTime = microtime(true);
             $className = Util::migrateFileNameToClassName($file);
             try {
