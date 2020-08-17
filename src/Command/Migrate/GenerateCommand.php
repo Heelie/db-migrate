@@ -7,6 +7,7 @@ use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
 use EasySwoole\Migrate\Command\MigrateCommand;
+use EasySwoole\Migrate\Config\Config;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
 use RuntimeException;
@@ -81,7 +82,7 @@ final class GenerateCommand extends CommandAbstract
      */
     protected function getIgnoreTables()
     {
-        $ignoreTables = [Util::DEFAULT_MIGRATE_TABLE];
+        $ignoreTables = [Config::DEFAULT_MIGRATE_TABLE];
         if ($ignore = $this->getOpt('ignore')) {
             return array_merge($ignoreTables, explode(',', $ignore));
         }

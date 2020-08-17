@@ -7,6 +7,7 @@ use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
 use EasySwoole\Migrate\Command\MigrateCommand;
+use EasySwoole\Migrate\Config\Config;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
 use Exception;
@@ -54,7 +55,7 @@ final class RollbackCommand extends CommandAbstract
                 $ref = new \ReflectionClass($className);
                 $sql = call_user_func([$ref->newInstance(), 'down']);
                 if ($this->dbFacade->query($sql)) {
-                    $deleteSql = "delete from `" . Util::DEFAULT_MIGRATE_TABLE . "` where `id`='{$id}' ";
+                    $deleteSql = "delete from `" . Config::DEFAULT_MIGRATE_TABLE . "` where `id`='{$id}' ";
                     $this->dbFacade->query($deleteSql);
                 }
             } catch (\Throwable $e) {
@@ -68,7 +69,7 @@ final class RollbackCommand extends CommandAbstract
 
     private function getRollbackFiles()
     {
-        $tableName = Util::DEFAULT_MIGRATE_TABLE;
+        $tableName = Config::DEFAULT_MIGRATE_TABLE;
         $sql       = "select `id`,`migration` from `{$tableName}` where ";
         if (($batch = $this->getOpt('batch')) && is_numeric($batch)) {
             $sql .= " `batch`={$batch} ";
@@ -85,7 +86,7 @@ final class RollbackCommand extends CommandAbstract
         $readyRollbackFiles = array_column($readyRollbackFiles, 'migration', 'id');
 
         foreach ($readyRollbackFiles as $id => $file) {
-            $file = Util::MIGRATE_PATH . $file . ".php";
+            $file = Config::MIGRATE_PATH . $file . ".php";
             if (file_exists($file)) {
                 Util::requireOnce($file);
             }

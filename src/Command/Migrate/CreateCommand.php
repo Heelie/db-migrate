@@ -8,6 +8,7 @@ use EasySwoole\Command\AbstractInterface\ResultInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
 use EasySwoole\Migrate\Command\MigrateCommand;
+use EasySwoole\Migrate\Config\Config;
 use EasySwoole\Migrate\Utility\Util;
 use EasySwoole\Migrate\Validate\Validator;
 use EasySwoole\Utility\File;
@@ -51,7 +52,7 @@ final class CreateCommand extends CommandAbstract
 
         $migrateFileName = Util::genMigrateClassName($migrateName);
         // $migratePath     = self::MIGRATE_PATH;
-        $migrateFilePath = Util::MIGRATE_PATH . $migrateFileName;
+        $migrateFilePath = Config::MIGRATE_PATH . $migrateFileName;
 
         // if (!File::createDirectory($migratePath)) {
         //     throw new \Exception(sprintf('Failed to create directory "%s", please check permissions', $migratePath));
@@ -61,7 +62,7 @@ final class CreateCommand extends CommandAbstract
             throw new Exception(sprintf('Migration file "%s" creation failed, file already exists or directory is not writable', $migrateFilePath));
         }
 
-        $contents = str_replace([Util::MIGRATE_TEMPLATE_CLASS_NAME, Util::MIGRATE_TEMPLATE_TABLE_NAME], $migrateClassName, file_get_contents($migrateTemplate));
+        $contents = str_replace([Config::MIGRATE_TEMPLATE_CLASS_NAME, Config::MIGRATE_TEMPLATE_TABLE_NAME], $migrateClassName, file_get_contents($migrateTemplate));
 
         if (file_put_contents($migrateFilePath, $contents) === false) {
             throw new Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
@@ -73,15 +74,15 @@ final class CreateCommand extends CommandAbstract
     private function getMigrateName()
     {
         if ($migrateName = $this->getOpt('create')) {
-            return [$migrateName, Util::MIGRATE_CREATE_TEMPLATE];
+            return [$migrateName, Config::MIGRATE_CREATE_TEMPLATE];
         } elseif ($migrateName = $this->getOpt('alter')) {
-            return [$migrateName, Util::MIGRATE_ALTER_TEMPLATE];
+            return [$migrateName, Config::MIGRATE_ALTER_TEMPLATE];
         } elseif ($migrateName = $this->getOpt('drop')) {
-            return [$migrateName, Util::MIGRATE_DROP_TEMPLATE];
+            return [$migrateName, Config::MIGRATE_DROP_TEMPLATE];
         } elseif ($migrateName = $this->getOpt('table')) {
-            return [$migrateName, Util::MIGRATE_TEMPLATE];
+            return [$migrateName, Config::MIGRATE_TEMPLATE];
         } elseif ($migrateName = $this->getArg(1)) {
-            return [$migrateName, Util::MIGRATE_TEMPLATE];
+            return [$migrateName, Config::MIGRATE_TEMPLATE];
         }
         return [null, null];
     }
