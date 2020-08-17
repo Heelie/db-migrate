@@ -10,7 +10,7 @@ class Validator
 {
     public static function isValidName(string $str): bool
     {
-        return boolval(preg_match('/^(?!_)\w+$/', $str));
+        return boolval(preg_match('/^(?!_|\d)\w+$/', $str));
     }
 
     public static function isHumpName(string $str): bool
@@ -18,12 +18,20 @@ class Validator
         return boolval(preg_match('/^([A-Z][a-z0-9]+)+$/', $str));
     }
 
-    public static function ensureMigrationDoesntAlreadyExist($migrateClassName)
+    public static function validClass($className, $type)
     {
-        $migrationFiles = Util::getAllMigrateFiles();
+        $files = [];
+        switch ($type){
+            case 'migrate':
+                $files = Util::getAllMigrateFiles();
+                break;
+            case 'seeder':
+                $files = Util::getAllSeederFiles();
+                break;
+        }
 
-        Util::requireOnce($migrationFiles);
+        Util::requireOnce($files);
 
-        return class_exists($migrateClassName);
+        return class_exists($className);
     }
 }
