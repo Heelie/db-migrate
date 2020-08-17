@@ -12,6 +12,7 @@ use EasySwoole\Migrate\Command\Migrate\GenerateCommand;
 use EasySwoole\Migrate\Command\Migrate\ResetCommand;
 use EasySwoole\Migrate\Command\Migrate\RollbackCommand;
 use EasySwoole\Migrate\Command\Migrate\RunCommand;
+use EasySwoole\Migrate\Command\Migrate\SeedCommand;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
@@ -25,6 +26,7 @@ class MigrateCommand extends CommandAbstract
         'reset'    => ResetCommand::class,
         'rollback' => RollbackCommand::class,
         'run'      => RunCommand::class,
+        'seed'     => SeedCommand::class,
     ];
 
     public function commandName(): string
@@ -51,7 +53,8 @@ class MigrateCommand extends CommandAbstract
             // $commandHelp->addAction('fresh', 'Drop all tables and re-run all migrations');
             // $commandHelp->addAction('refresh', 'Reset and re-run all migrations');
             $commandHelp->addAction('reset', 'Rollback all database migrations');
-            $commandHelp->addAction('status', 'Show the status of each migration');
+            // $commandHelp->addAction('status', 'Show the status of each migration');
+            $commandHelp->addAction('seed', 'Data filling tool');
         } catch (Throwable $throwable) {
             //do something
         }
