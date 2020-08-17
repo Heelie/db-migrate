@@ -11,6 +11,7 @@ use EasySwoole\Migrate\Config\Config;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
 use RuntimeException;
+use Throwable;
 
 final class GenerateCommand extends CommandAbstract
 {
@@ -54,8 +55,9 @@ final class GenerateCommand extends CommandAbstract
             }
             array_walk($allTables, function ($tableName) {
                 var_dump($tableName);
+                //todo
             });
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return Color::error($throwable->getMessage());
         }
         return Color::success('All table migration repository generation completed.');
