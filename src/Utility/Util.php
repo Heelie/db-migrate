@@ -4,6 +4,7 @@ namespace EasySwoole\Migrate\Utility;
 
 use DateTime;
 use DateTimeZone;
+use EasySwoole\Migrate\Config\Config;
 use EasySwoole\Migrate\Validate\Validator;
 
 /**
@@ -91,16 +92,25 @@ class Util
     /**
      * @return array
      */
-    public static function getAllMigrateFiles():array
+    public static function getAllMigrateFiles(): array
     {
-        return glob(self::MIGRATE_PATH . '*.php');
+        return glob(Config::MIGRATE_PATH . '*.php');
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllSeederFiles(): array
+    {
+        return glob(Config::SEEDER_PATH . '*.php');
     }
 
     /**
      * @param $files
      */
-    public static function requireOnce($files){
-        foreach ((array)$files as $file){
+    public static function requireOnce($files)
+    {
+        foreach ((array)$files as $file) {
             require_once $file;
         }
     }
