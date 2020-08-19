@@ -42,26 +42,10 @@ class DatabaseFacade extends DatabaseAbstract
         return self::$instance;
     }
 
-    /**
-     * @param SplArray $config
-     */
-    public function setConfig(SplArray $config)
-    {
-        $this->config = $config;
-    }
-
     private function check()
     {
-        if (is_null($this->config)) {
-            // temporary...
-            $devConfig = require EASYSWOOLE_ROOT . '/dev.php';
-            if (!isset($devConfig['DATABASE'])) {
-                throw new RuntimeException('Database configuration information was not read');
-            }
-            $this->setConfig(new SplArray($devConfig['DATABASE']));
-        }
         /** get default database type */
-        $default = $this->config->get('default');
+        $default = $this->getConfig()->get('default');
         if (!isset($this->databases[$default])) {
             throw new RuntimeException(sprintf('This database "%s" is not supported', $default));
         }
@@ -78,7 +62,6 @@ class DatabaseFacade extends DatabaseAbstract
         if (!static::$database) {
             try {
                 $ref = new ReflectionClass($this->databases[$default]);
-                /** @var DatabaseInterface $database instance */
                 static::$database = $ref->newInstance();
             } catch (Throwable $e) {
                 throw new RuntimeException($e->getMessage());
