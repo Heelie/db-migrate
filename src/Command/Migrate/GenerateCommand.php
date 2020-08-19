@@ -9,6 +9,10 @@ use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
 use EasySwoole\Migrate\Command\MigrateCommand;
 use EasySwoole\Migrate\Config\Config;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
+use EasySwoole\Migrate\DDLSyntax\DDLColumnSyntax;
+use EasySwoole\Migrate\DDLSyntax\DDLForeignSyntax;
+use EasySwoole\Migrate\DDLSyntax\DDLIndexSyntax;
+use EasySwoole\Migrate\DDLSyntax\DDLTableSyntax;
 use EasySwoole\Migrate\Utility\Util;
 use RuntimeException;
 use Throwable;
@@ -53,14 +57,25 @@ final class GenerateCommand extends CommandAbstract
             if (empty($allTables)) {
                 throw new RuntimeException('No table found.');
             }
-            array_walk($allTables, function ($tableName) {
-                var_dump($tableName);
-                //todo
-            });
+            return array_walk($allTables,'generate');
+            // $this->generate($allTables);
         } catch (Throwable $throwable) {
             return Color::error($throwable->getMessage());
         }
         return Color::success('All table migration repository generation completed.');
+    }
+
+    private function generate($tableName)
+    {
+        $defaultSqlDrive = DatabaseFacade::getInstance()->getConfig()->get('default');
+        $tableSchema = DatabaseFacade::getInstance()->getConfig()->get($defaultSqlDrive . '.dbname');
+        $createTableDDl = join(PHP_EOL, array_filter([
+            DDLTableSyntax::generate($tableSchema, $tableName),
+            DDLColumnSyntax::generate($tableSchema, $tableName),
+            DDLIndexSyntax::generate($tableSchema, $tableName),
+            DDLForeignSyntax::generate($tableSchema, $tableName),
+        ]));
+        //todo file_put_contents $createTableDDl
     }
 
     /**
