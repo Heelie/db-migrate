@@ -37,4 +37,11 @@ class Config
 
     /** @var string seeder template file path */
     const SEEDER_TEMPLATE = __DIR__ . '/../Resource/seeder._php';
+
+
+    /** @var string migrate template class name */
+    const MIGRATE_TEMPLATE_DDL_SYNTAX = 'DDLSyntax';
+
+    /** @var string generate migrate template file path */
+    const MIGRATE_GENERATE_TEMPLATE = __DIR__ . '/../Resource/migrate_generate._php';
 }
