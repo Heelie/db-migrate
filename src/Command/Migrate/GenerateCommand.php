@@ -71,6 +71,13 @@ final class GenerateCommand extends CommandAbstract
 
     private function generate($tableName, $index, &$outMsg)
     {
+        $migrateClassName = 'Create' . ucfirst(Util::lineConvertHump($tableName));
+        $migrateFileName = Util::genMigrateFileName('Create' . ucfirst(Util::lineConvertHump($tableName)));
+        $migrateFilePath = Config::MIGRATE_PATH . $migrateFileName;
+
+        $outMsg[] = "<brown>Generating: </brown>{$migrateFileName}";
+        $startTime = microtime(true);
+
         $defaultSqlDrive = DatabaseFacade::getInstance()->getConfig()->get('default');
         $tableSchema = DatabaseFacade::getInstance()->getConfig()->get($defaultSqlDrive . '.dbname');
         $createTableDDl = join(PHP_EOL, array_filter([
@@ -80,15 +87,6 @@ final class GenerateCommand extends CommandAbstract
             DDLForeignSyntax::generate($tableSchema, $tableName),
         ]));
         //todo file_put_contents $createTableDDl
-
-        $migrateClassName = 'Create' . ucfirst(Util::lineConvertHump($tableName));
-        $migrateFileName = Util::genMigrateFileName('Create' . ucfirst(Util::lineConvertHump($tableName)));
-        // $migratePath     = self::MIGRATE_PATH;
-        $migrateFilePath = Config::MIGRATE_PATH . $migrateFileName;
-
-        // if (!File::createDirectory($migratePath)) {
-        //     throw new \Exception(sprintf('Failed to create directory "%s", please check permissions', $migratePath));
-        // }
 
         if (!File::touchFile($migrateFilePath, false)) {
             throw new Exception(sprintf('Migration file "%s" creation failed, file already exists or directory is not writable', $migrateFilePath));
@@ -111,8 +109,8 @@ final class GenerateCommand extends CommandAbstract
         if (file_put_contents($migrateFilePath, $contents) === false) {
             throw new Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
         }
-
-        $outMsg[] = sprintf('Migration file "%s" created successfully', $migrateFilePath);
+        $outMsg[] = "<green>Generated:  </green>{$migrateFileName} (" . round(microtime(true) - $startTime, 2) . " seconds)";
+        // $outMsg[] = sprintf('Migration file "%s" created successfully', $migrateFilePath);
         // return Color::success(sprintf('Migration file "%s" created successfully', $migrateFilePath));
     }
 
