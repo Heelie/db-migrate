@@ -63,7 +63,7 @@ class Util
      * @param $migrateName
      * @return string
      */
-    public static function genMigrateClassName($migrateName)
+    public static function genMigrateFileName($migrateName)
     {
         if (Validator::isHumpName($migrateName)) {
             $migrateName = self::humpConvertLine($migrateName);
