@@ -20,7 +20,7 @@ use Throwable;
 
 class MigrateCommand extends CommandAbstract
 {
-    private $command = [
+    private array $command = [
         'create'   => CreateCommand::class,
         'generate' => GenerateCommand::class,
         'reset'    => ResetCommand::class,
@@ -46,19 +46,18 @@ class MigrateCommand extends CommandAbstract
             if (isset($this->command[$option])) {
                 return $this->callOptionMethod($option, __FUNCTION__, [$commandHelp]);
             }
-            $commandHelp->addAction('create', 'Create the migration repository');
-            $commandHelp->addAction('generate', 'Generate migration repository for existing tables');
-            $commandHelp->addAction('run', 'run all migrations');
-            $commandHelp->addAction('rollback', 'Rollback the last database migration');
-            // $commandHelp->addAction('fresh', 'Drop all tables and re-run all migrations');
-            // $commandHelp->addAction('refresh', 'Reset and re-run all migrations');
-            $commandHelp->addAction('reset', 'Rollback all database migrations');
-            // $commandHelp->addAction('status', 'Show the status of each migration');
-            $commandHelp->addAction('seed', 'Data filling tool');
         } catch (Throwable $throwable) {
             //do something
         }
-
+        $commandHelp->addAction('create', 'Create the migration repository');
+        $commandHelp->addAction('generate', 'Generate migration repository for existing tables');
+        $commandHelp->addAction('run', 'run all migrations');
+        $commandHelp->addAction('rollback', 'Rollback the last database migration');
+        // $commandHelp->addAction('fresh', 'Drop all tables and re-run all migrations');
+        // $commandHelp->addAction('refresh', 'Reset and re-run all migrations');
+        $commandHelp->addAction('reset', 'Rollback all database migrations');
+        // $commandHelp->addAction('status', 'Show the status of each migration');
+        $commandHelp->addAction('seed', 'Data filling tool');
         return $commandHelp;
     }
 
