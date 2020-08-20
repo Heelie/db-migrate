@@ -13,7 +13,7 @@ class DDLColumnSyntax
      */
     public static function generate(string $tableSchema, string $tableName)
     {
-        $columns =join(',',  [
+        $columns = join(',', [
             '`COLUMN_NAME`',
             '`COLUMN_DEFAULT`',
             '`IS_NULLABLE`',
@@ -34,8 +34,12 @@ class DDLColumnSyntax
                 AND `table_name`='{$tableName}';";
         $columns = DatabaseFacade::getInstance()->query($sql);
         $createTableDDl = [];
-        array_walk($columns,function ($column) use (&$createTableDDl){
-            //todo concat
-        });
+        array_walk($columns, 'generateColumn', $createTableDDl);
+        return join(PHP_EOL, $createTableDDl);
+    }
+
+    private function generateColumn($column, $index, &$createTableDDl)
+    {
+        //todo concat
     }
 }
