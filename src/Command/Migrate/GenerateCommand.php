@@ -14,7 +14,9 @@ use EasySwoole\Migrate\DDLSyntax\DDLForeignSyntax;
 use EasySwoole\Migrate\DDLSyntax\DDLIndexSyntax;
 use EasySwoole\Migrate\DDLSyntax\DDLTableSyntax;
 use EasySwoole\Migrate\Utility\Util;
+use EasySwoole\Utility\File;
 use RuntimeException;
+use Exception;
 use Throwable;
 
 final class GenerateCommand extends CommandAbstract
@@ -53,19 +55,21 @@ final class GenerateCommand extends CommandAbstract
 
             // ignore table
             $ignoreTables = $this->getIgnoreTables();
-            $allTables    = array_diff($migrateTables, $ignoreTables);
+            $allTables = array_diff($migrateTables, $ignoreTables);
             if (empty($allTables)) {
                 throw new RuntimeException('No table found.');
             }
-            return array_walk($allTables,'generate');
+            $outMsg = [];
+            array_walk($allTables, 'generate', $outMsg);
             // $this->generate($allTables);
         } catch (Throwable $throwable) {
             return Color::error($throwable->getMessage());
         }
-        return Color::success('All table migration repository generation completed.');
+        $outMsg[] = '<success>All table migration repository generation completed.</success>';
+        return Color::render(join(PHP_EOL, $outMsg));
     }
 
-    private function generate($tableName)
+    private function generate($tableName, $index, &$outMsg)
     {
         $defaultSqlDrive = DatabaseFacade::getInstance()->getConfig()->get('default');
         $tableSchema = DatabaseFacade::getInstance()->getConfig()->get($defaultSqlDrive . '.dbname');
@@ -76,6 +80,40 @@ final class GenerateCommand extends CommandAbstract
             DDLForeignSyntax::generate($tableSchema, $tableName),
         ]));
         //todo file_put_contents $createTableDDl
+
+        $migrateClassName = 'Create' . ucfirst(Util::lineConvertHump($tableName));
+        $migrateFileName = Util::genMigrateFileName('Create' . ucfirst(Util::lineConvertHump($tableName)));
+        // $migratePath     = self::MIGRATE_PATH;
+        $migrateFilePath = Config::MIGRATE_PATH . $migrateFileName;
+
+        // if (!File::createDirectory($migratePath)) {
+        //     throw new \Exception(sprintf('Failed to create directory "%s", please check permissions', $migratePath));
+        // }
+
+        if (!File::touchFile($migrateFilePath, false)) {
+            throw new Exception(sprintf('Migration file "%s" creation failed, file already exists or directory is not writable', $migrateFilePath));
+        }
+
+        $contents = str_replace(
+            [
+                Config::MIGRATE_TEMPLATE_CLASS_NAME,
+                Config::MIGRATE_TEMPLATE_TABLE_NAME,
+                Config::MIGRATE_TEMPLATE_DDL_SYNTAX
+            ],
+            [
+                $migrateClassName,
+                $migrateClassName,
+                $createTableDDl
+            ],
+            file_get_contents(Config::MIGRATE_GENERATE_TEMPLATE)
+        );
+
+        if (file_put_contents($migrateFilePath, $contents) === false) {
+            throw new Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
+        }
+
+        $outMsg[] = sprintf('Migration file "%s" created successfully', $migrateFilePath);
+        // return Color::success(sprintf('Migration file "%s" created successfully', $migrateFilePath));
     }
 
     /**
