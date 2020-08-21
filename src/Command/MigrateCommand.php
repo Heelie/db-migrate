@@ -20,7 +20,7 @@ use Throwable;
 
 class MigrateCommand extends CommandAbstract
 {
-    private array $command = [
+    private $command = [
         'create'   => CreateCommand::class,
         'generate' => GenerateCommand::class,
         'reset'    => ResetCommand::class,
