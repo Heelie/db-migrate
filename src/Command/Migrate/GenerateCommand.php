@@ -55,12 +55,12 @@ final class GenerateCommand extends CommandAbstract
 
             // ignore table
             $ignoreTables = $this->getIgnoreTables();
-            $allTables = array_diff($migrateTables, $ignoreTables);
+            $allTables    = array_diff($migrateTables, $ignoreTables);
             if (empty($allTables)) {
                 throw new RuntimeException('No table found.');
             }
             $outMsg = [];
-            array_walk($allTables, 'generate', $outMsg);
+            array_walk($allTables, [$this, 'generate'], $outMsg);
             // $this->generate($allTables);
         } catch (Throwable $throwable) {
             return Color::error($throwable->getMessage());
@@ -72,15 +72,15 @@ final class GenerateCommand extends CommandAbstract
     private function generate($tableName, $index, &$outMsg)
     {
         $migrateClassName = 'Create' . ucfirst(Util::lineConvertHump($tableName));
-        $migrateFileName = Util::genMigrateFileName('Create' . ucfirst(Util::lineConvertHump($tableName)));
-        $migrateFilePath = Config::MIGRATE_PATH . $migrateFileName;
+        $migrateFileName  = Util::genMigrateFileName('Create' . ucfirst(Util::lineConvertHump($tableName)));
+        $migrateFilePath  = Config::MIGRATE_PATH . $migrateFileName;
 
-        $outMsg[] = "<brown>Generating: </brown>{$migrateFileName}";
+        $outMsg[]  = "<brown>Generating: </brown>{$migrateFileName}";
         $startTime = microtime(true);
 
         $defaultSqlDrive = DatabaseFacade::getInstance()->getConfig()->get('default');
-        $tableSchema = DatabaseFacade::getInstance()->getConfig()->get($defaultSqlDrive . '.dbname');
-        $createTableDDl = join(PHP_EOL, array_filter([
+        $tableSchema     = DatabaseFacade::getInstance()->getConfig()->get($defaultSqlDrive . '.dbname');
+        $createTableDDl  = join(PHP_EOL, array_filter([
             DDLTableSyntax::generate($tableSchema, $tableName),
             DDLColumnSyntax::generate($tableSchema, $tableName),
             DDLIndexSyntax::generate($tableSchema, $tableName),
