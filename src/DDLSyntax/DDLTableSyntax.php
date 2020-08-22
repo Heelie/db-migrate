@@ -19,8 +19,8 @@ class DDLTableSyntax
      */
     public static function generate(string $tableSchema, string $tableName)
     {
-        $tables = self::getTableAttribute($tableSchema, $tableName);
-        return self::generateTable(current($tables));
+        $tableAttrs = self::getTableAttribute($tableSchema, $tableName);
+        return self::genTableDDLSyntax(current($tableAttrs));
     }
 
     /**
@@ -48,7 +48,7 @@ class DDLTableSyntax
      * @param array $table
      * @return string
      */
-    private static function generateTable(array $table)
+    private static function genTableDDLSyntax(array $table)
     {
         $createTableDDl   = [];
         $createTableDDl[] = "\$table->setIfNotExists();";
