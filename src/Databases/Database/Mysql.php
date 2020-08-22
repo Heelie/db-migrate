@@ -7,6 +7,12 @@ use EasySwoole\Spl\SplArray;
 use mysqli;
 use RuntimeException;
 
+/**
+ * Class Mysql
+ * @package EasySwoole\Migrate\Databases\Database
+ * @author heelie.hj@gmail.com
+ * @date 2020/8/22 21:21:35
+ */
 class Mysql implements DatabaseInterface
 {
     /** @var mysqli */
@@ -25,8 +31,6 @@ class Mysql implements DatabaseInterface
     public function query(string $query)
     {
         $result = $this->resource->query($query);
-        // var_dump($result);
-        // die;
         if (is_bool($result)) {
             if ($result === false && $this->resource->error) {
                 throw new RuntimeException($this->resource->error . PHP_EOL . ' SQL:' . $query);
