@@ -80,13 +80,16 @@ final class GenerateCommand extends CommandAbstract
 
         $defaultSqlDrive = DatabaseFacade::getInstance()->getConfig()->get('default');
         $tableSchema     = DatabaseFacade::getInstance()->getConfig()->get($defaultSqlDrive . '.dbname');
-        $createTableDDl  = join(PHP_EOL, array_filter([
-            DDLTableSyntax::generate($tableSchema, $tableName),
-            DDLColumnSyntax::generate($tableSchema, $tableName),
-            DDLIndexSyntax::generate($tableSchema, $tableName),
-            DDLForeignSyntax::generate($tableSchema, $tableName),
-        ]));
-        //todo file_put_contents $createTableDDl
+        $createTableDDl  = str_replace(PHP_EOL,
+            str_pad(PHP_EOL, strlen(PHP_EOL) + 12, ' ', STR_PAD_RIGHT),
+            join(PHP_EOL, array_filter([
+                    DDLTableSyntax::generate($tableSchema, $tableName),
+                    DDLColumnSyntax::generate($tableSchema, $tableName),
+                    DDLIndexSyntax::generate($tableSchema, $tableName),
+                    DDLForeignSyntax::generate($tableSchema, $tableName),
+                ])
+            )
+        );
 
         if (!File::touchFile($migrateFilePath, false)) {
             throw new Exception(sprintf('Migration file "%s" creation failed, file already exists or directory is not writable', $migrateFilePath));
