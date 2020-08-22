@@ -5,6 +5,12 @@ namespace EasySwoole\Migrate\Databases\AbstractInterface;
 use EasySwoole\Spl\SplArray;
 use RuntimeException;
 
+/**
+ * Class DatabaseAbstract
+ * @package EasySwoole\Migrate\Databases\AbstractInterface
+ * @author heelie.hj@gmail.com
+ * @date 2020/8/22 21:26:20
+ */
 abstract class DatabaseAbstract
 {
     /** @var SplArray */
