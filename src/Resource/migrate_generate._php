@@ -17,7 +17,7 @@ class MigratorClassName
      */
     public function up()
     {
-        return DDLBuilder::create('MigratorTableName',function (CreateTable $table){
+        return DDLBuilder::create('MigratorTableName', function (CreateTable $table) {
             DDLSyntax
         });
     }
