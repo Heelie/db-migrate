@@ -1,9 +1,4 @@
 <?php
-/**
- * Database Facade
- * @Author:heelie.hj@gmail.com
- * @Date:2020/06/30 15:56:21
- */
 
 namespace EasySwoole\Migrate\Databases;
 
@@ -15,6 +10,13 @@ use ReflectionClass;
 use RuntimeException;
 use Throwable;
 
+/**
+ * Database Facade
+ * Class DatabaseFacade
+ * @package EasySwoole\Migrate\Databases
+ * @author heelie.hj@gmail.com
+ * @date 2020/06/30 15:56:21
+ */
 class DatabaseFacade extends DatabaseAbstract
 {
     private static $instance;
@@ -37,7 +39,7 @@ class DatabaseFacade extends DatabaseAbstract
     public static function getInstance()
     {
         if (!isset(self::$instance)) {
-            self::$instance = new static();
+            self::$instance = new self();
         }
         return self::$instance;
     }
