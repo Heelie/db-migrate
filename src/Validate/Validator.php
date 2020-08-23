@@ -3,9 +3,13 @@
 namespace EasySwoole\Migrate\Validate;
 
 use EasySwoole\Migrate\Utility\Util;
-use EasySwoole\Utility\File;
-use InvalidArgumentException;
 
+/**
+ * Class Validator
+ * @package EasySwoole\Migrate\Validate
+ * @author heelie.hj@gmail.com
+ * @date 2020/8/22 21:29:54
+ */
 class Validator
 {
     public static function isValidName(string $str): bool
