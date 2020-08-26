@@ -3,6 +3,7 @@
 namespace EasySwoole\Migrate\DDLSyntax;
 
 use EasySwoole\Migrate\Databases\DatabaseFacade;
+use EasySwoole\Migrate\Utility\Util;
 
 class DDLForeignSyntax
 {
@@ -13,10 +14,10 @@ class DDLForeignSyntax
      */
     public static function generate(string $tableSchema, string $tableName)
     {
-        $indAttrs = self::getForeignAttribute($tableSchema, $tableName);
-        $indAttrs = self::arrayBindKey($indAttrs, null, 'INDEX_NAME');
-        $indexDDl = array_map([__CLASS__, 'genIndexDDLSyntax'], $indAttrs);
-        return join(PHP_EOL, $indexDDl);
+        $foreAttrs = self::getForeignAttribute($tableSchema, $tableName);
+        $foreAttrs = Util::arrayBindKey($foreAttrs, 'CONSTRAINT_NAME');
+        $foreignDDl = array_map([__CLASS__, 'genForeignDDLSyntax'], $foreAttrs);
+        return join(PHP_EOL, $foreignDDl);
     }
 
     private static function getForeignAttribute(string $tableSchema, string $tableName)
@@ -34,4 +35,11 @@ class DDLForeignSyntax
         return DatabaseFacade::getInstance()->query($sql);
     }
 
+    private static function genForeignDDLSyntax($indAttrs)
+    {
+        $constraintName       = current($indAttrs)['CONSTRAINT_NAME'];
+        $columnName           = array_column($indAttrs, 'COLUMN_NAME');
+        $referencedTableName  = current($indAttrs)['REFERENCED_TABLE_NAME'];
+        $referencedColumnName = array_column($indAttrs, 'REFERENCED_COLUMN_NAME');
+    }
 }
