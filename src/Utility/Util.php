@@ -39,15 +39,15 @@ class Util
 
     /**
      * @param array $array
-     * @param string|null $key
+     * @param string $indexKey
      * @return array
      */
-    public static function arrayBindKey(array $array, ?string $key = null)
+    public static function arrayBindKey(array $array, string $indexKey)
     {
         $result = [];
         foreach ($array as $key => $value) {
-            if (isset($value[$key])){
-                $result[$value[$key]][] = is_null($key) ? $value : $value[$key];
+            if (isset($value[$indexKey])){
+                $result[$value[$indexKey]][] = $value;
             }
         }
         return $result;
