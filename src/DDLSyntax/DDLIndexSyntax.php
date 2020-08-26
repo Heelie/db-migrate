@@ -60,6 +60,6 @@ class DDLIndexSyntax
         }
         $ddlSyntax .= "('{$indexName}', ['" . join('\', \'', $columnName) . "'])";
         $ddlSyntax .= $indexComment ? "->setIndexComment('{$indexComment}')" : '';
-        return $ddlSyntax;
+        return $ddlSyntax . ';';
     }
 }
