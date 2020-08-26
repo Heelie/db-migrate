@@ -38,6 +38,22 @@ class Util
     }
 
     /**
+     * @param array $array
+     * @param string|null $key
+     * @return array
+     */
+    public static function arrayBindKey(array $array, ?string $key = null)
+    {
+        $result = [];
+        foreach ($array as $key => $value) {
+            if (isset($value[$key])){
+                $result[$value[$key]][] = is_null($key) ? $value : $value[$key];
+            }
+        }
+        return $result;
+    }
+
+    /**
      * @param $migrateName
      * @return string
      */
