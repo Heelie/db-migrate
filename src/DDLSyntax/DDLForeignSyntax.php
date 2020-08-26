@@ -75,7 +75,7 @@ class DDLForeignSyntax
         $referencedTableName  = current($indAttrs)['REFERENCED_TABLE_NAME'];
         $referencedColumnName = array_column($indAttrs, 'REFERENCED_COLUMN_NAME');
 
-        $ddlSyntax = "\$table->foreign('{$constraintName}', '{$columnName}', '{$referencedTableName}', '{$referencedColumnName}')";
+        $ddlSyntax = "\$table->foreign('{$constraintName}', ['" . join('\', \'', $columnName) . "'], '{$referencedTableName}', ['" . join('\', \'', $referencedColumnName) . "'])";
 
         $foreignConstraints = self::getForeignConstraints($tableSchema, $constraintName, $tableName, $referencedTableName);
 
