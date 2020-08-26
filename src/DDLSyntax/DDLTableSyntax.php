@@ -19,8 +19,8 @@ class DDLTableSyntax
      */
     public static function generate(string $tableSchema, string $tableName)
     {
-        $tableAttrs = self::getTableAttribute($tableSchema, $tableName);
-        return self::genTableDDLSyntax(current($tableAttrs));
+        $tabAttrs = self::getTableAttribute($tableSchema, $tableName);
+        return self::genTableDDLSyntax(current($tabAttrs));
     }
 
     /**
