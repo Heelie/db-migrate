@@ -3,6 +3,7 @@
 namespace EasySwoole\Migrate\DDLSyntax;
 
 use EasySwoole\Migrate\Databases\DatabaseFacade;
+use EasySwoole\Migrate\Utility\Util;
 
 /**
  * Class DDLIndexSyntax
@@ -20,7 +21,7 @@ class DDLIndexSyntax
     public static function generate(string $tableSchema, string $tableName)
     {
         $indAttrs = self::getIndexAttribute($tableSchema, $tableName);
-        $indAttrs = self::arrayBindKey($indAttrs, null, 'INDEX_NAME');
+        $indAttrs = Util::arrayBindKey($indAttrs, 'INDEX_NAME');
         $indexDDl = array_map([__CLASS__, 'genIndexDDLSyntax'], $indAttrs);
         return join(PHP_EOL, $indexDDl);
     }
@@ -60,18 +61,5 @@ class DDLIndexSyntax
         $ddlSyntax .= "('{$indexName}', ['" . join('\', \'', $columnName) . "'])";
         $ddlSyntax .= $indexComment ? "->setIndexComment('{$indexComment}')" : '';
         return $ddlSyntax;
-    }
-
-    private static function arrayBindKey(array $array, ?string $column, ?string $index_key = null)
-    {
-        $result = [];
-        foreach ($array as $key => $value) {
-            if ($index_key) {
-                $result[$value[$index_key]][] = is_null($column) ? $value : $value[$column];
-            } else {
-                $result[$key] = is_null($column) ? $value : $value[$column];
-            }
-        }
-        return $result;
     }
 }
