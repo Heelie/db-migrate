@@ -43,7 +43,23 @@ class DDLIndexSyntax
 
     private static function genIndexDDLSyntax($indAttrs)
     {
-
+        $nonUnique    = current($indAttrs)['NON_UNIQUE'];
+        $indexName    = current($indAttrs)['INDEX_NAME'];
+        $columnName   = array_column($indAttrs, 'COLUMN_NAME');
+        $indexType    = current($indAttrs)['INDEX_TYPE'];
+        $indexComment = current($indAttrs)['INDEX_COMMENT'];
+        if ($indexName == 'PRIMARY') {
+            $ddlSyntax = "\$table->primary";
+        } elseif ($nonUnique === '0') {
+            $ddlSyntax = "\$table->unique";
+        } elseif ($indexType == 'FULLTEXT') {
+            $ddlSyntax = "\$table->fulltext";
+        } else {
+            $ddlSyntax = "\$table->normal";
+        }
+        $ddlSyntax .= "('{$indexName}', ['" . join('\', \'', $columnName) . "'])";
+        $ddlSyntax .= $indexComment ? "->setIndexComment('{$indexComment}')" : '';
+        return $ddlSyntax;
     }
 
     private static function arrayBindKey(array $array, ?string $column, ?string $index_key = null)
