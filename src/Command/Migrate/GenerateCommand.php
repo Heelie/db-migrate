@@ -117,8 +117,6 @@ final class GenerateCommand extends CommandAbstract
         $noteSql = 'insert into ' . Config::DEFAULT_MIGRATE_TABLE . ' (`migration`,`batch`) VALUE (\'' . $migrateFileName . '\',\'' . $batchNo . '\')';
         DatabaseFacade::getInstance()->query($noteSql);
         $outMsg[] = "<green>Generated:  </green>{$migrateFileName} (" . round(microtime(true) - $startTime, 2) . " seconds)";
-        // $outMsg[] = sprintf('Migration file "%s" created successfully', $migrateFilePath);
-        // return Color::success(sprintf('Migration file "%s" created successfully', $migrateFilePath));
     }
 
     /**
