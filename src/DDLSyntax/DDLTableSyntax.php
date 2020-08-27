@@ -53,7 +53,7 @@ class DDLTableSyntax
         $createTableDDl   = [];
         $createTableDDl[] = "\$table->setIfNotExists();";
         $createTableDDl[] = "\$table->setTableName('{$table['TABLE_NAME']}');";
-        $createTableDDl[] = "\$table->setTableEngine('{$table['ENGINE']}');";
+        $createTableDDl[] = "\$table->setTableEngine('" . strtolower($table['ENGINE']) . "');";
         $createTableDDl[] = "\$table->setTableCharset('{$table['TABLE_COLLATION']}');";
         $createTableDDl[] = $table['AUTO_INCREMENT'] > 0 ? "\$table->setTableAutoIncrement(1);" : null;
         $createTableDDl[] = $table['TABLE_COMMENT'] ? "\$table->setTableComment('{$table['TABLE_COMMENT']}');" : null;
