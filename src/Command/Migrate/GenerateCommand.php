@@ -59,9 +59,11 @@ final class GenerateCommand extends CommandAbstract
             if (empty($allTables)) {
                 throw new RuntimeException('No table found.');
             }
+            $batchNo = (new RunCommand)->getBatchNo();
             $outMsg = [];
-            array_walk($allTables, [$this, 'generate'], $outMsg);
-            // $this->generate($allTables);
+            foreach ($allTables as $tableName) {
+                $this->generate($tableName, $batchNo, $outMsg);
+            }
         } catch (Throwable $throwable) {
             return Color::error($throwable->getMessage());
         }
@@ -69,7 +71,7 @@ final class GenerateCommand extends CommandAbstract
         return Color::render(join(PHP_EOL, $outMsg));
     }
 
-    private function generate($tableName, $index, &$outMsg)
+    private function generate($tableName, $batchNo, &$outMsg)
     {
         $migrateClassName = 'Create' . ucfirst(Util::lineConvertHump($tableName));
         $migrateFileName  = Util::genMigrateFileName('Create' . ucfirst(Util::lineConvertHump($tableName)));
@@ -112,6 +114,8 @@ final class GenerateCommand extends CommandAbstract
         if (file_put_contents($migrateFilePath, $contents) === false) {
             throw new Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
         }
+        $noteSql = 'insert into ' . Config::DEFAULT_MIGRATE_TABLE . ' (`migration`,`batch`) VALUE (\'' . $migrateFileName . '\',\'' . $batchNo . '\')';
+        DatabaseFacade::getInstance()->query($noteSql);
         $outMsg[] = "<green>Generated:  </green>{$migrateFileName} (" . round(microtime(true) - $startTime, 2) . " seconds)";
         // $outMsg[] = sprintf('Migration file "%s" created successfully', $migrateFilePath);
         // return Color::success(sprintf('Migration file "%s" created successfully', $migrateFilePath));
