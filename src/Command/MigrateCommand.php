@@ -31,11 +31,25 @@ class MigrateCommand extends CommandAbstract
 
     public function commandName(): string
     {
+        try {
+            $option = $this->getArg(0);
+            if (isset($this->command[$option])) {
+                return $this->callOptionMethod($option, __FUNCTION__);
+            }
+        } catch (Throwable $throwable) {
+        }
         return 'migrate';
     }
 
     public function desc(): string
     {
+        try {
+            $option = $this->getArg(0);
+            if (isset($this->command[$option])) {
+                return $this->callOptionMethod($option, __FUNCTION__);
+            }
+        } catch (Throwable $throwable) {
+        }
         return 'database migrate tool';
     }
 
