@@ -86,7 +86,7 @@ class DDLColumnSyntax
             '`NUMERIC_PRECISION`',
             '`NUMERIC_SCALE`',
             '`DATETIME_PRECISION`',
-            '`CHARACTER_SET_NAME`',
+            '`COLLATION_NAME`',
             '`COLUMN_TYPE`',
             '`COLUMN_KEY`',
             '`EXTRA`',
@@ -127,7 +127,7 @@ class DDLColumnSyntax
             return sprintf('// Todo::For some reason the field "%s" is not generated', $colAttrs['COLUMN_NAME']);
         }
         // ->setColumnCharset()
-        $ddlSyntax .= $colAttrs['CHARACTER_SET_NAME'] ? "->setColumnCharset('{$colAttrs['CHARACTER_SET_NAME']}')" : '';
+        $ddlSyntax .= $colAttrs['COLLATION_NAME'] ? "->setColumnCharset('{$colAttrs['COLLATION_NAME']}')" : '';
         // ->setColumnComment()
         $ddlSyntax .= $colAttrs['COLUMN_COMMENT'] ? "->setColumnComment('{$colAttrs['COLUMN_COMMENT']}')" : '';
         // ->setDefaultValue()
@@ -138,11 +138,11 @@ class DDLColumnSyntax
         // todo setIsBinary
         // ->setIsNotNull()
         $ddlSyntax .= (strtoupper($colAttrs['IS_NULLABLE']) == 'NO') ? "->setIsNotNull()" : '';
-        // ->setIsPrimaryKey()
+        // ->setIsPrimaryKey()  todo::改为index实现
         // $ddlSyntax .= ($colAttrs['COLUMN_KEY'] == 'PRI') ? "->setIsPrimaryKey(true)" : '';
         // ->setIsUnique()
         // ->setIsUnsigned()
-        $ddlSyntax .= (strpos(strtolower($colAttrs['COLUMN_TYPE']), 'unsigned') !== false) ? "->setIsUnique()" : '';
+        $ddlSyntax .= (strpos(strtolower($colAttrs['COLUMN_TYPE']), 'unsigned') !== false) ? "->setIsUnsigned()" : '';
         // ->setZeroFill();
         $ddlSyntax .= (strpos(strtolower($colAttrs['COLUMN_TYPE']), 'zerofill') !== false) ? "->setZeroFill()" : '';
         return $ddlSyntax . ";";
