@@ -77,7 +77,8 @@ final class GenerateCommand extends CommandAbstract
         $migrateFileName  = Util::genMigrateFileName('Create' . ucfirst(Util::lineConvertHump($tableName)));
         $migrateFilePath  = Config::MIGRATE_PATH . $migrateFileName;
 
-        $outMsg[]  = "<brown>Generating: </brown>{$migrateFileName}";
+        $fileName = basename($migrateFileName, '.php');
+        $outMsg[]  = "<brown>Generating: </brown>{$fileName}";
         $startTime = microtime(true);
 
         $defaultSqlDrive = DatabaseFacade::getInstance()->getConfig()->get('default');
@@ -114,9 +115,9 @@ final class GenerateCommand extends CommandAbstract
         if (file_put_contents($migrateFilePath, $contents) === false) {
             throw new Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
         }
-        $noteSql = 'insert into ' . Config::DEFAULT_MIGRATE_TABLE . ' (`migration`,`batch`) VALUE (\'' . $migrateFileName . '\',\'' . $batchNo . '\')';
+        $noteSql = 'insert into ' . Config::DEFAULT_MIGRATE_TABLE . ' (`migration`,`batch`) VALUE (\'' . $fileName . '\',\'' . $batchNo . '\')';
         DatabaseFacade::getInstance()->query($noteSql);
-        $outMsg[] = "<green>Generated:  </green>{$migrateFileName} (" . round(microtime(true) - $startTime, 2) . " seconds)";
+        $outMsg[] = "<green>Generated:  </green>{$fileName} (" . round(microtime(true) - $startTime, 2) . " seconds)";
     }
 
     /**
