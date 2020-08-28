@@ -72,6 +72,7 @@ class MigrateCommand extends CommandAbstract
         $commandHelp->addAction('reset', 'Rollback all database migrations');
         // $commandHelp->addAction('status', 'Show the status of each migration');
         $commandHelp->addAction('seed', 'Data filling tool');
+        $commandHelp->addActionOpt('-h, --help', 'Get help');
         return $commandHelp;
     }
 
