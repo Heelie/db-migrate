@@ -13,6 +13,7 @@ use EasySwoole\Migrate\Config\Config;
 use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
 use Exception;
+use Throwable;
 
 final class ResetCommand extends CommandAbstract
 {
@@ -39,8 +40,7 @@ final class ResetCommand extends CommandAbstract
     }
 
     /**
-     * @return ResultInterface|string|null
-     * @throws Exception
+     * @return string|null
      */
     public function exec(): ?string
     {
@@ -59,7 +59,7 @@ final class ResetCommand extends CommandAbstract
                     $deleteSql = "delete from `" . Config::DEFAULT_MIGRATE_TABLE . "` where `id`='{$id}' ";
                     $this->dbFacade->query($deleteSql);
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return Color::error($e->getMessage());
             }
             $outMsg[] = "<green>Migrated:  </green>{$file} (" . round(microtime(true) - $startTime, 2) . " seconds)";

@@ -14,6 +14,7 @@ use EasySwoole\Migrate\Validate\Validator;
 use EasySwoole\Utility\File;
 use Exception;
 use InvalidArgumentException;
+use Throwable;
 
 final class CreateCommand extends CommandAbstract
 {
@@ -37,8 +38,8 @@ final class CreateCommand extends CommandAbstract
     }
 
     /**
-     * @return ResultInterface|string|null
-     * @throws Exception
+     * @return string|null
+     * @throws Throwable
      */
     public function exec(): ?string
     {
