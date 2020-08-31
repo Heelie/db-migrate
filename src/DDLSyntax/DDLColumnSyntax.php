@@ -101,11 +101,9 @@ class DDLColumnSyntax
 
     private static function genColumnDDLSyntax($colAttrs)
     {
-        // /** @var \EasySwoole\DDL\Blueprint\Create\Table $table */
-        // $table->int()
-        // ->setColumnType()
-        // ->setColumnName()
-        // ->setColumnLimit()
+        // setColumnType
+        // setColumnName
+        // setColumnLimit
         if (in_array($colAttrs['DATA_TYPE'], self::$integer)) {
             if ($colAttrs['DATA_TYPE'] == 'integer') {
                 $colAttrs['DATA_TYPE'] = 'int';
@@ -126,24 +124,24 @@ class DDLColumnSyntax
         } else {
             return sprintf('// Todo::For some reason the field "%s" is not generated', $colAttrs['COLUMN_NAME']);
         }
-        // ->setColumnCharset()
+        // setColumnCharset
         $ddlSyntax .= $colAttrs['COLLATION_NAME'] ? "->setColumnCharset('{$colAttrs['COLLATION_NAME']}')" : '';
-        // ->setColumnComment()
+        // setColumnComment
         $ddlSyntax .= $colAttrs['COLUMN_COMMENT'] ? "->setColumnComment('{$colAttrs['COLUMN_COMMENT']}')" : '';
-        // ->setDefaultValue()
+        // setDefaultValue
         $ddlSyntax .= $colAttrs['COLUMN_DEFAULT'] ? "->setDefaultValue('{$colAttrs['COLUMN_DEFAULT']}')" : '';
-        // ->setIsAutoIncrement()
+        // setIsAutoIncrement
         $ddlSyntax .= (strtolower($colAttrs['EXTRA']) == 'auto_increment') ? "->setIsAutoIncrement()" : '';
-        // ->setIsBinary()
+        // setIsBinary
         // todo setIsBinary
-        // ->setIsNotNull()
+        // setIsNotNull
         $ddlSyntax .= (strtoupper($colAttrs['IS_NULLABLE']) == 'NO') ? "->setIsNotNull()" : '';
-        // ->setIsPrimaryKey()  todo::改为index实现
+        // setIsPrimaryKey  todo::改为index实现
         // $ddlSyntax .= ($colAttrs['COLUMN_KEY'] == 'PRI') ? "->setIsPrimaryKey(true)" : '';
-        // ->setIsUnique()
-        // ->setIsUnsigned()
+        // setIsUnique
+        // setIsUnsigned
         $ddlSyntax .= (strpos(strtolower($colAttrs['COLUMN_TYPE']), 'unsigned') !== false) ? "->setIsUnsigned()" : '';
-        // ->setZeroFill();
+        // setZeroFill
         $ddlSyntax .= (strpos(strtolower($colAttrs['COLUMN_TYPE']), 'zerofill') !== false) ? "->setZeroFill()" : '';
         return $ddlSyntax . ";";
     }

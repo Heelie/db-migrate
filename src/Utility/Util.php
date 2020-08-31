@@ -6,6 +6,7 @@ use DateTime;
 use DateTimeZone;
 use EasySwoole\Migrate\Config\Config;
 use EasySwoole\Migrate\Validate\Validator;
+use Throwable;
 
 /**
  * Class Util
@@ -56,6 +57,7 @@ class Util
     /**
      * @param $migrateName
      * @return string
+     * @throws Throwable
      */
     public static function genMigrateFileName($migrateName)
     {
@@ -67,6 +69,7 @@ class Util
 
     /**
      * @return string
+     * @throws Throwable
      */
     public static function getCurrentMigrateDate()
     {
