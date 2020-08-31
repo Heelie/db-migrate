@@ -38,6 +38,9 @@ final class GenerateCommand extends CommandAbstract
         return $commandHelp;
     }
 
+    /**
+     * @return string|null
+     */
     public function exec(): ?string
     {
         try {
