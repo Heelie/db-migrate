@@ -39,8 +39,6 @@ final class RunCommand extends CommandAbstract
 
     public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
     {
-        $commandHelp->addActionOpt('--batch', 'rollback migrate batch no');
-        $commandHelp->addActionOpt('--id', 'rollback migrate id');
         return $commandHelp;
     }
 
