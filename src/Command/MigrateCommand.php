@@ -19,6 +19,12 @@ use ReflectionClass;
 use ReflectionException;
 use Throwable;
 
+/**
+ * Class MigrateCommand
+ * @package EasySwoole\Migrate\Command
+ * @author heelie.hj@gmail.com
+ * @date 2020/9/4 22:16:48
+ */
 class MigrateCommand extends CommandAbstract
 {
     private $command = [

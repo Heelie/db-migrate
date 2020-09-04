@@ -17,6 +17,12 @@ use EasySwoole\Migrate\Utility\Util;
 use EasySwoole\Spl\SplArray;
 use RuntimeException;
 
+/**
+ * Class RunCommand
+ * @package EasySwoole\Migrate\Command\Migrate
+ * @author heelie.hj@gmail.com
+ * @date 2020/9/4 22:19:27
+ */
 final class RunCommand extends CommandAbstract
 {
     private $dbFacade;
@@ -94,19 +100,8 @@ final class RunCommand extends CommandAbstract
         return $allMigrationFiles;
     }
 
-    private function getDatabaseConfig()
-    {
-        $devConfig = require EASYSWOOLE_ROOT . '/dev.php';
-        if (!isset($devConfig['DATABASE'])) {
-            throw new RuntimeException('Database configuration information was not read');
-        }
-        $dbConfig = new SplArray($devConfig['DATABASE']);
-        $this->dbFacade->setConfig($dbConfig);
-    }
-
     private function ensureDatabaseTableAlreadyExist()
     {
-        $this->getDatabaseConfig();
         $tableExists = $this->dbFacade->query('SHOW TABLES LIKE "' . Config::DEFAULT_MIGRATE_TABLE . '"');
         if (empty($tableExists)) {
             $this->createDefaultMigrateTable();
