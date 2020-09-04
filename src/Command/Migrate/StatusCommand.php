@@ -14,6 +14,12 @@ use EasySwoole\Utility\File;
 use Exception;
 use InvalidArgumentException;
 
+/**
+ * Class StatusCommand
+ * @package EasySwoole\Migrate\Command\Migrate
+ * @author heelie.hj@gmail.com
+ * @date 2020/9/4 22:14:56
+ */
 final class StatusCommand extends CommandAbstract
 {
     private $strlen = 'strlen';
