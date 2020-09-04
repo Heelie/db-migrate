@@ -107,3 +107,7 @@ Options:
   - 示例：`php easyswoole migrate seed --class=UserTable`
 - `--create`：创建一个数据填充模板
   - 示例：`php easyswoole migrate seed --create=UserTable`
+
+> status
+
+迁移状态
