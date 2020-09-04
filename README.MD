@@ -47,6 +47,7 @@ Actions:
   rollback  Rollback the last database migration
   reset     Rollback all database migrations
   seed      Data filling tool
+  status    Show the status of each migration
 
 Options:
   -h, --help  Get help
