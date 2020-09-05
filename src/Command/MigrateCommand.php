@@ -6,6 +6,10 @@ use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Command\CommandManager;
+use EasySwoole\DDL\Blueprint\Create\Table as CreateTable;
+use EasySwoole\DDL\DDLBuilder;
+use EasySwoole\DDL\Enum\Character;
+use EasySwoole\DDL\Enum\Engine;
 use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
 use EasySwoole\Migrate\Command\Migrate\CreateCommand;
 use EasySwoole\Migrate\Command\Migrate\GenerateCommand;
@@ -14,9 +18,12 @@ use EasySwoole\Migrate\Command\Migrate\RollbackCommand;
 use EasySwoole\Migrate\Command\Migrate\RunCommand;
 use EasySwoole\Migrate\Command\Migrate\SeedCommand;
 use EasySwoole\Migrate\Command\Migrate\StatusCommand;
+use EasySwoole\Migrate\Config\Config;
+use EasySwoole\Migrate\Databases\DatabaseFacade;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -27,6 +34,9 @@ use Throwable;
  */
 class MigrateCommand extends CommandAbstract
 {
+    /** @var DatabaseFacade */
+    protected $dbFacade;
+
     private $command = [
         'create'   => CreateCommand::class,
         'generate' => GenerateCommand::class,
@@ -87,10 +97,11 @@ class MigrateCommand extends CommandAbstract
     public function exec(): ?string
     {
         try {
+            $this->check();
             return $this->callOptionMethod($this->getArg(0), __FUNCTION__);
         } catch (Throwable $throwable) {
             return Color::error($throwable->getMessage()) . "\n" .
-                CommandManager::getInstance()->displayCommandHelp($this->commandName());
+                CommandManager::getInstance()->displayCommandHelp('migrate');
         }
     }
 
@@ -108,5 +119,36 @@ class MigrateCommand extends CommandAbstract
         }
         $ref = new ReflectionClass($this->command[$option]);
         return call_user_func([$ref->newInstance(), $method], ...$args);
+    }
+
+    private function check()
+    {
+        $this->dbFacade = DatabaseFacade::getInstance();
+        $this->checkDefaultMigrateTable();
+        throw new RuntimeException('Create default migrate table fail.' . PHP_EOL . ' SQL: ');
+    }
+
+    private function checkDefaultMigrateTable()
+    {
+        $tableExists = $this->dbFacade->query('SHOW TABLES LIKE "' . Config::DEFAULT_MIGRATE_TABLE . '"');
+        if (empty($tableExists)) {
+            $this->createDefaultMigrateTable();
+        }
+    }
+
+    private function createDefaultMigrateTable()
+    {
+        $sql = DDLBuilder::create(Config::DEFAULT_MIGRATE_TABLE, function (CreateTable $table) {
+            $table->setIfNotExists()->setTableAutoIncrement(1);
+            $table->setTableEngine(Engine::INNODB);
+            $table->setTableCharset(Character::UTF8MB4_GENERAL_CI);
+            $table->int('id', 10)->setIsUnsigned()->setIsAutoIncrement()->setIsPrimaryKey();
+            $table->varchar('migration', 255)->setColumnCharset(Character::UTF8MB4_GENERAL_CI)->setIsNotNull();
+            $table->int('batch', 10)->setIsNotNull();
+            $table->normal('ind_batch', 'batch');
+        });
+        if ($this->dbFacade->query($sql) === false) {
+            throw new RuntimeException('Create default migrate table fail.' . PHP_EOL . ' SQL: ' . $sql);
+        }
     }
 }
