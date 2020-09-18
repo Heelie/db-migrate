@@ -30,7 +30,6 @@ final class RunCommand extends CommandAbstract
     public function __construct()
     {
         $this->dbFacade = DatabaseFacade::getInstance();
-        $this->ensureDatabaseTableAlreadyExist();
     }
 
     public function commandName(): string
@@ -98,30 +97,6 @@ final class RunCommand extends CommandAbstract
             }
         }
         return $allMigrationFiles;
-    }
-
-    private function ensureDatabaseTableAlreadyExist()
-    {
-        $tableExists = $this->dbFacade->query('SHOW TABLES LIKE "' . Config::DEFAULT_MIGRATE_TABLE . '"');
-        if (empty($tableExists)) {
-            $this->createDefaultMigrateTable();
-        }
-    }
-
-    private function createDefaultMigrateTable()
-    {
-        $sql = DDLBuilder::create(Config::DEFAULT_MIGRATE_TABLE, function (CreateTable $table) {
-            $table->setIfNotExists()->setTableAutoIncrement(1);
-            $table->setTableEngine(Engine::INNODB);
-            $table->setTableCharset(Character::UTF8MB4_GENERAL_CI);
-            $table->colInt('id', 11)->setIsUnsigned()->setIsAutoIncrement()->setIsPrimaryKey();
-            $table->colVarChar('migration', 255)->setColumnCharset(Character::UTF8MB4_GENERAL_CI)->setIsNotNull();
-            $table->colInt('batch', 11)->setIsNotNull();
-            $table->normal('ind_batch', 'batch');
-        });
-        if ($this->dbFacade->query($sql) === false) {
-            throw new RuntimeException('Create default migrate table fail.' . PHP_EOL . ' SQL: ' . $sql);
-        }
     }
 
     /**

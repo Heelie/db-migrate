@@ -12,6 +12,12 @@ use EasySwoole\Migrate\Databases\DatabaseFacade;
 use EasySwoole\Migrate\Utility\Util;
 use Exception;
 
+/**
+ * Class RollbackCommand
+ * @package EasySwoole\Migrate\Command\Migrate
+ * @author heelie.hj@gmail.com
+ * @date 2020/9/19 00:30:42
+ */
 final class RollbackCommand extends CommandAbstract
 {
     private $dbFacade;
@@ -33,8 +39,8 @@ final class RollbackCommand extends CommandAbstract
 
     public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
     {
-        $commandHelp->addActionOpt('--batch', 'rollback migrate batch no');
-        $commandHelp->addActionOpt('--id', 'rollback migrate id');
+        $commandHelp->addActionOpt('-b, --batch', 'rollback migrate batch no');
+        $commandHelp->addActionOpt('-i, --id', 'rollback migrate id');
         return $commandHelp;
     }
 
@@ -71,9 +77,9 @@ final class RollbackCommand extends CommandAbstract
     {
         $tableName = Config::DEFAULT_MIGRATE_TABLE;
         $sql       = "select `id`,`migration` from `{$tableName}` where ";
-        if (($batch = $this->getOpt('batch')) && is_numeric($batch)) {
+        if (($batch = $this->getOpt(['b', 'batch'])) && is_numeric($batch)) {
             $sql .= " `batch`={$batch} ";
-        } elseif (($id = $this->getOpt('id')) && is_numeric($id)) {
+        } elseif (($id = $this->getOpt(['i', 'id'])) && is_numeric($id)) {
             $sql .= " `id`={$id} ";
         } else {
             $sql .= " `batch`=(select max(batch) from `{$tableName}` )";

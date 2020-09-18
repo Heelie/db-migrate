@@ -3,7 +3,6 @@
 namespace EasySwoole\Migrate\Command;
 
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
-use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
 use EasySwoole\Command\CommandManager;
 use EasySwoole\DDL\Blueprint\Create\Table as CreateTable;
@@ -127,7 +126,6 @@ class MigrateCommand extends CommandAbstract
     {
         $this->dbFacade = DatabaseFacade::getInstance();
         $this->checkDefaultMigrateTable();
-        throw new RuntimeException('Create default migrate table fail.' . PHP_EOL . ' SQL: ');
     }
 
     private function checkDefaultMigrateTable()

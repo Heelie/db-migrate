@@ -22,6 +22,12 @@ use InvalidArgumentException;
 use RuntimeException;
 use Throwable;
 
+/**
+ * Class SeedCommand
+ * @package EasySwoole\Migrate\Command\Migrate
+ * @author heelie.hj@gmail.com
+ * @date 2020/9/19 00:30:36
+ */
 final class SeedCommand extends CommandAbstract
 {
     public function commandName(): string
@@ -36,8 +42,8 @@ final class SeedCommand extends CommandAbstract
 
     public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
     {
-        $commandHelp->addActionOpt('--class', 'The class name for data filling');
-        $commandHelp->addActionOpt('--create', 'Create a seeder template');
+        $commandHelp->addActionOpt('-cs, --class', 'The class name for data filling');
+        $commandHelp->addActionOpt('-cr, --create', 'Create a seeder template');
         return $commandHelp;
     }
 
@@ -47,10 +53,10 @@ final class SeedCommand extends CommandAbstract
     public function exec(): ?string
     {
         try {
-            if ($createClass = $this->getOpt('create')) {
+            if ($createClass = $this->getOpt(['cr', 'create'])) {
                 return $this->create($createClass);
             }
-            if ($class = $this->getOpt('class')) {
+            if ($class = $this->getOpt(['cs', 'class'])) {
                 return $this->seederRun(explode(',', $class));
             }
             return $this->seederRun(Util::getAllSeederFiles());

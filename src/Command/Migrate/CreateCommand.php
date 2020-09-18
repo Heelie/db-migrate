@@ -16,6 +16,12 @@ use Exception;
 use InvalidArgumentException;
 use Throwable;
 
+/**
+ * Class CreateCommand
+ * @package EasySwoole\Migrate\Command\Migrate
+ * @author heelie.hj@gmail.com
+ * @date 2020/9/19 00:30:50
+ */
 final class CreateCommand extends CommandAbstract
 {
     public function commandName(): string
@@ -30,10 +36,10 @@ final class CreateCommand extends CommandAbstract
 
     public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
     {
-        $commandHelp->addActionOpt('--alter', 'generate alter migrate template');
-        $commandHelp->addActionOpt('--create', 'generate create migrate template');
-        $commandHelp->addActionOpt('--drop', 'generate drop migrate template');
-        $commandHelp->addActionOpt('--table', 'generate basic migrate template');
+        $commandHelp->addActionOpt('-a, --alter', 'generate alter migrate template');
+        $commandHelp->addActionOpt('-c, --create', 'generate create migrate template');
+        $commandHelp->addActionOpt('-d, --drop', 'generate drop migrate template');
+        $commandHelp->addActionOpt('-t, --table', 'generate basic migrate template');
         return $commandHelp;
     }
 
@@ -74,13 +80,13 @@ final class CreateCommand extends CommandAbstract
 
     private function getMigrateName()
     {
-        if ($migrateName = $this->getOpt('create')) {
+        if ($migrateName = $this->getOpt(['c', 'create'])) {
             return [$migrateName, Config::MIGRATE_CREATE_TEMPLATE];
-        } elseif ($migrateName = $this->getOpt('alter')) {
+        } elseif ($migrateName = $this->getOpt(['a', 'alter'])) {
             return [$migrateName, Config::MIGRATE_ALTER_TEMPLATE];
-        } elseif ($migrateName = $this->getOpt('drop')) {
+        } elseif ($migrateName = $this->getOpt(['d', 'drop'])) {
             return [$migrateName, Config::MIGRATE_DROP_TEMPLATE];
-        } elseif ($migrateName = $this->getOpt('table')) {
+        } elseif ($migrateName = $this->getOpt(['t', 'table'])) {
             return [$migrateName, Config::MIGRATE_TEMPLATE];
         } elseif ($migrateName = $this->getArg(1)) {
             return [$migrateName, Config::MIGRATE_TEMPLATE];

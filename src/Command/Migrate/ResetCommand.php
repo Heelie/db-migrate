@@ -15,6 +15,12 @@ use EasySwoole\Migrate\Utility\Util;
 use Exception;
 use Throwable;
 
+/**
+ * Class ResetCommand
+ * @package EasySwoole\Migrate\Command\Migrate
+ * @author heelie.hj@gmail.com
+ * @date 2020/9/19 00:25:14
+ */
 final class ResetCommand extends CommandAbstract
 {
     private $dbFacade;

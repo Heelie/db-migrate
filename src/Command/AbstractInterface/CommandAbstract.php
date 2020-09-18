@@ -6,6 +6,12 @@ use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Migrate\Utility\CommandManager;
 
+/**
+ * Class CommandAbstract
+ * @package EasySwoole\Migrate\Command\AbstractInterface
+ * @author heelie.hj@gmail.com
+ * @date 2020/9/19 00:05:27
+ */
 abstract class CommandAbstract implements CommandInterface
 {
     abstract public function commandName(): string;

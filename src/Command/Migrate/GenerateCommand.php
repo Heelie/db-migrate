@@ -19,6 +19,12 @@ use RuntimeException;
 use Exception;
 use Throwable;
 
+/**
+ * Class GenerateCommand
+ * @package EasySwoole\Migrate\Command\Migrate
+ * @author heelie.hj@gmail.com
+ * @date 2020/9/19 00:24:58
+ */
 final class GenerateCommand extends CommandAbstract
 {
     public function commandName(): string
@@ -33,8 +39,8 @@ final class GenerateCommand extends CommandAbstract
 
     public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
     {
-        $commandHelp->addActionOpt('--tables', 'Generate the migration repository of the specified table, multiple tables can be separated by ","');
-        $commandHelp->addActionOpt('--ignore', 'Tables that need to be excluded when generate the migration repository, multiple tables can be separated by ","');
+        $commandHelp->addActionOpt('-t, --table', 'Generate the migration repository of the specified table, multiple tables can be separated by ","');
+        $commandHelp->addActionOpt('-i, --ignore', 'Tables that need to be excluded when generate the migration repository, multiple tables can be separated by ","');
         return $commandHelp;
     }
 
@@ -46,7 +52,7 @@ final class GenerateCommand extends CommandAbstract
         try {
             // need to migrate
             $migrateTables = $this->getExistsTables();
-            if ($specifiedTables = $this->getOpt('tables')) {
+            if ($specifiedTables = $this->getOpt(['t', 'table'])) {
                 $specifiedTables = explode(',', $specifiedTables);
                 array_walk($specifiedTables, function ($tableName) use ($migrateTables) {
                     if (!in_array($tableName, $migrateTables)) {
@@ -63,7 +69,7 @@ final class GenerateCommand extends CommandAbstract
                 throw new RuntimeException('No table found.');
             }
             $batchNo = (new RunCommand)->getBatchNo();
-            $outMsg = [];
+            $outMsg  = [];
             foreach ($allTables as $tableName) {
                 $this->generate($tableName, $batchNo, $outMsg);
             }
@@ -80,7 +86,7 @@ final class GenerateCommand extends CommandAbstract
         $migrateFileName  = Util::genMigrateFileName('Create' . ucfirst(Util::lineConvertHump($tableName)));
         $migrateFilePath  = Config::MIGRATE_PATH . $migrateFileName;
 
-        $fileName = basename($migrateFileName, '.php');
+        $fileName  = basename($migrateFileName, '.php');
         $outMsg[]  = "<brown>Generating: </brown>{$fileName}";
         $startTime = microtime(true);
 
@@ -145,7 +151,7 @@ final class GenerateCommand extends CommandAbstract
     protected function getIgnoreTables()
     {
         $ignoreTables = [Config::DEFAULT_MIGRATE_TABLE];
-        if ($ignore = $this->getOpt('ignore')) {
+        if ($ignore = $this->getOpt(['i', 'ignore'])) {
             return array_merge($ignoreTables, explode(',', $ignore));
         }
         return $ignoreTables;
