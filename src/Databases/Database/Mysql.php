@@ -20,7 +20,7 @@ class Mysql implements DatabaseInterface
 
     public function connect(SplArray $config)
     {
-        $this->resource = new mysqli($config->host, $config->username, $config->password, $config->dbname, $config->port ?: 3306);
+        $this->resource = new mysqli($config->host, $config->user, $config->password, $config->database, $config->port ?: 3306);
         if ($this->resource->connect_error) {
             throw new RuntimeException('database connect error:' . $this->resource->connect_error);
         }

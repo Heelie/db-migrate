@@ -29,11 +29,12 @@ abstract class DatabaseAbstract
                 Core::getInstance()->runMode($mode);
             }
             Core::getInstance()->loadEnv();
-            $devConfig = Config::getInstance()->getConf('MYSQL');
-            if (!$devConfig) {
+            // $databaseConfig = Config::getInstance()->getConf('DATABASE');
+            $databaseConfig = Config::getInstance()->getConf('MYSQL');
+            if (!$databaseConfig) {
                 throw new RuntimeException('Database configuration information was not read');
             }
-            $this->setConfig(new SplArray($devConfig));
+            $this->setConfig(new SplArray($databaseConfig));
         }
         return $this->config;
     }

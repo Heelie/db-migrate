@@ -59,17 +59,19 @@ class DatabaseFacade extends DatabaseAbstract
      */
     public function query(string $query)
     {
-        $this->check();
-        $default = $this->config->get('default');
+        // todo::多数据库支持check
+        // $this->check();
+        // $default = $this->config->get('default');
+        $this->getConfig();
         if (!static::$database) {
             try {
-                $ref = new ReflectionClass($this->databases[$default]);
+                $ref = new ReflectionClass($this->databases['mysql']);
                 static::$database = $ref->newInstance();
             } catch (Throwable $e) {
                 throw new RuntimeException($e->getMessage());
             }
         }
-        static::$database->connect(new SplArray($this->config->get($default)));
+        static::$database->connect(new SplArray($this->config));
         return call_user_func([static::$database, __FUNCTION__], $query);
     }
 }
