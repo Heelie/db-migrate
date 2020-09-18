@@ -80,6 +80,9 @@ class MigrateCommand extends CommandAbstract
             }
         } catch (Throwable $throwable) {
             //do something
+        } finally {
+            $commandHelp->addActionOpt('-m, --mode[=dev]', 'Run mode');
+            $commandHelp->addActionOpt('-h, --help', 'Get help');
         }
         $commandHelp->addAction('create', 'Create the migration repository');
         $commandHelp->addAction('generate', 'Generate migration repository for existing tables');
@@ -90,7 +93,6 @@ class MigrateCommand extends CommandAbstract
         $commandHelp->addAction('reset', 'Rollback all database migrations');
         $commandHelp->addAction('seed', 'Data filling tool');
         $commandHelp->addAction('status', 'Show the status of each migration');
-        $commandHelp->addActionOpt('-h, --help', 'Get help');
         return $commandHelp;
     }
 

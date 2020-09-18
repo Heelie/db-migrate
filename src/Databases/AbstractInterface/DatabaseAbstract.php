@@ -2,7 +2,7 @@
 
 namespace EasySwoole\Migrate\Databases\AbstractInterface;
 
-use EasySwoole\Command\CommandManager;
+use EasySwoole\Migrate\Utility\CommandManager;
 use EasySwoole\EasySwoole\Config;
 use EasySwoole\EasySwoole\Core;
 use EasySwoole\Spl\SplArray;
@@ -24,13 +24,11 @@ abstract class DatabaseAbstract
     public function getConfig()
     {
         if (is_null($this->config)) {
-            $mode = CommandManager::getInstance()->getOpt('mode');
+            $mode = CommandManager::getInstance()->getOpt(['m', 'mode']);
             if (!empty($mode)) {
                 Core::getInstance()->runMode($mode);
             }
             Core::getInstance()->loadEnv();
-            // temporary...
-            // $devConfig = require EASYSWOOLE_ROOT . '/dev.php';
             $devConfig = Config::getInstance()->getConf('MYSQL');
             if (!$devConfig) {
                 throw new RuntimeException('Database configuration information was not read');
