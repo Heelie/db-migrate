@@ -52,7 +52,7 @@ final class CreateCommand extends CommandAbstract
         $migrateClassName = $this->checkName($migrateName);
 
         $migrateFileName = Util::genMigrateFileName($migrateName);
-        // $migratePath     = self::MIGRATE_PATH;
+
         $migrateFilePath = Config::MIGRATE_PATH . $migrateFileName;
 
         // if (!File::createDirectory($migratePath)) {

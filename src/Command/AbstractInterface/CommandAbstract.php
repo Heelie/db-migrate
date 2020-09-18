@@ -4,7 +4,7 @@ namespace EasySwoole\Migrate\Command\AbstractInterface;
 
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\CommandInterface;
-use EasySwoole\Command\CommandManager;
+use EasySwoole\Migrate\Utility\CommandManager;
 
 abstract class CommandAbstract implements CommandInterface
 {
