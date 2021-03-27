@@ -9,7 +9,7 @@
 > bootstrap.php
 
 ```php
-\EasySwoole\Command\CommandManager::getInstance()->addCommand(new \EasySwoole\Migrate\Command\MigrateCommand());
+\EasySwoole\Command\CommandManager::getInstance()->addCommand(new \EasySwoole\DatabaseMigrate\Command\MigrateCommand());
 ```
 
 在dev中增加配置信息
@@ -18,15 +18,13 @@
 
 ```php
 return [
-    ......
-    'DATABASE' => [
-        'default'=>'mysql',
-        'mysql' =>[
-            'host' =>'127.0.0.1',
-            'username' =>'root',
-            'password' =>'root',
-            'dbname' =>'es_test',
-        ]
+    // ......
+    'MYSQL' => [
+        'host' => '127.0.0.1',
+        'port' => 3306,
+        'username' => 'root',
+        'password' => 'root',
+        'database' => 'easyswoole',
     ]
 ];
 ```
@@ -104,7 +102,7 @@ Options:
 
 可用操作选项：
 
-- `--class`：指定要填充的class name，也就是文件名 ==（请保证填充工具文件名与类型完全相同）== 
+- `--class`：指定要填充的class name，也就是文件名 ==（请保证填充工具文件名与类名完全相同）== 
   - 示例：`php easyswoole migrate seed --class=UserTable`
 - `--create`：创建一个数据填充模板
   - 示例：`php easyswoole migrate seed --create=UserTable`
