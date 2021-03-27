@@ -1,6 +1,6 @@
 <?php
 
-namespace EasySwoole\Migrate\Config;
+namespace EasySwoole\DatabaseMigrate\Config;
 
 class Config
 {

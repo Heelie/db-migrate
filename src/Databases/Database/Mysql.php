@@ -1,15 +1,16 @@
 <?php
 
-namespace EasySwoole\Migrate\Databases\Database;
+namespace EasySwoole\DatabaseMigrate\Databases\Database;
 
-use EasySwoole\Migrate\Databases\AbstractInterface\DatabaseInterface;
+use EasySwoole\Command\Color;
+use EasySwoole\DatabaseMigrate\Databases\AbstractInterface\DatabaseInterface;
 use EasySwoole\Spl\SplArray;
 use mysqli;
 use RuntimeException;
 
 /**
  * Class Mysql
- * @package EasySwoole\Migrate\Databases\Database
+ * @package EasySwoole\DatabaseMigrate\Databases\Database
  * @author heelie.hj@gmail.com
  * @date 2020/8/22 21:21:35
  */
@@ -20,7 +21,12 @@ class Mysql implements DatabaseInterface
 
     public function connect(SplArray $config)
     {
-        $this->resource = new mysqli($config->host, $config->user, $config->password, $config->database, $config->port ?: 3306);
+        try {
+            $this->resource = new mysqli($config->host, $config->username, $config->password, $config->database, $config->port ?: 3306);
+        } catch (\Throwable $exception) {
+            die(Color::error($exception->getMessage()) . PHP_EOL);
+        }
+
         if ($this->resource->connect_error) {
             throw new RuntimeException('database connect error:' . $this->resource->connect_error);
         }

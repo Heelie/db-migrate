@@ -1,19 +1,19 @@
 <?php
 
-namespace EasySwoole\Migrate\Command\Migrate;
+namespace EasySwoole\DatabaseMigrate\Command\Migrate;
 
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Color;
-use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
-use EasySwoole\Migrate\Command\MigrateCommand;
-use EasySwoole\Migrate\Config\Config;
-use EasySwoole\Migrate\Databases\DatabaseFacade;
-use EasySwoole\Migrate\DDLSyntax\DDLColumnSyntax;
-use EasySwoole\Migrate\DDLSyntax\DDLForeignSyntax;
-use EasySwoole\Migrate\DDLSyntax\DDLIndexSyntax;
-use EasySwoole\Migrate\DDLSyntax\DDLTableSyntax;
-use EasySwoole\Migrate\Utility\Util;
+use EasySwoole\DatabaseMigrate\Command\AbstractInterface\CommandAbstract;
+use EasySwoole\DatabaseMigrate\Command\MigrateCommand;
+use EasySwoole\DatabaseMigrate\Config\Config;
+use EasySwoole\DatabaseMigrate\Databases\DatabaseFacade;
+use EasySwoole\DatabaseMigrate\DDLSyntax\DDLColumnSyntax;
+use EasySwoole\DatabaseMigrate\DDLSyntax\DDLForeignSyntax;
+use EasySwoole\DatabaseMigrate\DDLSyntax\DDLIndexSyntax;
+use EasySwoole\DatabaseMigrate\DDLSyntax\DDLTableSyntax;
+use EasySwoole\DatabaseMigrate\Utility\Util;
 use EasySwoole\Utility\File;
 use RuntimeException;
 use Exception;
@@ -21,7 +21,7 @@ use Throwable;
 
 /**
  * Class GenerateCommand
- * @package EasySwoole\Migrate\Command\Migrate
+ * @package EasySwoole\DatabaseMigrate\Command\Migrate
  * @author heelie.hj@gmail.com
  * @date 2020/9/19 00:24:58
  */
@@ -83,15 +83,16 @@ final class GenerateCommand extends CommandAbstract
     private function generate($tableName, $batchNo, &$outMsg)
     {
         $migrateClassName = 'Create' . ucfirst(Util::lineConvertHump($tableName));
-        $migrateFileName  = Util::genMigrateFileName('Create' . ucfirst(Util::lineConvertHump($tableName)));
+        $migrateFileName  = Util::genMigrateFileName($migrateClassName);
         $migrateFilePath  = Config::MIGRATE_PATH . $migrateFileName;
 
         $fileName  = basename($migrateFileName, '.php');
         $outMsg[]  = "<brown>Generating: </brown>{$fileName}";
         $startTime = microtime(true);
 
-        $defaultSqlDrive = DatabaseFacade::getInstance()->getConfig()->get('default');
-        $tableSchema     = DatabaseFacade::getInstance()->getConfig()->get($defaultSqlDrive . '.dbname');
+        // $defaultSqlDrive = DatabaseFacade::getInstance()->getConfig()->get('default');
+        // $tableSchema     = DatabaseFacade::getInstance()->getConfig()->get($defaultSqlDrive . '.dbname');
+        $tableSchema     = DatabaseFacade::getInstance()->getConfig()->get('database');
         $createTableDDl  = str_replace(PHP_EOL,
             str_pad(PHP_EOL, strlen(PHP_EOL) + 12, ' ', STR_PAD_RIGHT),
             join(PHP_EOL, array_filter([
@@ -115,12 +116,11 @@ final class GenerateCommand extends CommandAbstract
             ],
             [
                 $migrateClassName,
-                $migrateClassName,
+                $tableName,
                 $createTableDDl
             ],
             file_get_contents(Config::MIGRATE_GENERATE_TEMPLATE)
         );
-
         if (file_put_contents($migrateFilePath, $contents) === false) {
             throw new Exception(sprintf('Migration file "%s" is not writable', $migrateFilePath));
         }

@@ -1,12 +1,12 @@
 <?php
 
-namespace EasySwoole\Migrate\Validate;
+namespace EasySwoole\DatabaseMigrate\Validate;
 
-use EasySwoole\Migrate\Utility\Util;
+use EasySwoole\DatabaseMigrate\Utility\Util;
 
 /**
  * Class Validator
- * @package EasySwoole\Migrate\Validate
+ * @package EasySwoole\DatabaseMigrate\Validate
  * @author heelie.hj@gmail.com
  * @date 2020/8/22 21:29:54
  */
@@ -25,7 +25,7 @@ class Validator
     public static function validClass($className, $type)
     {
         $files = [];
-        switch ($type){
+        switch ($type) {
             case 'migrate':
                 $files = Util::getAllMigrateFiles();
                 break;

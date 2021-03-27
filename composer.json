@@ -1,5 +1,5 @@
 {
-    "name": "easyswoole/db-migrate",
+    "name": "easyswoole/dbmigrate",
     "type": "library",
     "description": "An efficient swoole framework",
     "keywords": [
@@ -28,7 +28,8 @@
     },
     "autoload": {
         "psr-4": {
-            "EasySwoole\\Migrate\\": "src/"
+            "EasySwoole\\DatabaseMigrate\\": "src/",
+            "EasySwoole\\DatabaseMigrate\\Tests\\": "tests"
         }
     },
     "require-dev": {

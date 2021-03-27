@@ -1,10 +1,11 @@
 <?php
 
-namespace EasySwoole\Migrate\Databases;
+namespace EasySwoole\DatabaseMigrate\Databases;
 
-use EasySwoole\Migrate\Databases\AbstractInterface\DatabaseAbstract;
-use EasySwoole\Migrate\Databases\AbstractInterface\DatabaseInterface;
-use EasySwoole\Migrate\Databases\Database\Mysql;
+use EasySwoole\Component\Singleton;
+use EasySwoole\DatabaseMigrate\Databases\AbstractInterface\DatabaseAbstract;
+use EasySwoole\DatabaseMigrate\Databases\AbstractInterface\DatabaseInterface;
+use EasySwoole\DatabaseMigrate\Databases\Database\Mysql;
 use EasySwoole\Spl\SplArray;
 use ReflectionClass;
 use RuntimeException;
@@ -13,20 +14,20 @@ use Throwable;
 /**
  * Database Facade
  * Class DatabaseFacade
- * @package EasySwoole\Migrate\Databases
+ * @package EasySwoole\DatabaseMigrate\Databases
  * @author heelie.hj@gmail.com
  * @date 2020/06/30 15:56:21
  */
 class DatabaseFacade extends DatabaseAbstract
 {
-    private static $instance;
+    use Singleton;
 
     /**
      * @var DatabaseInterface
      */
     private static $database;
 
-    /** @var SplArray */
+    /** @var SplArray|null */
     protected $config = null;
 
     /**
@@ -35,14 +36,6 @@ class DatabaseFacade extends DatabaseAbstract
     protected $databases = [
         'mysql' => Mysql::class
     ];
-
-    public static function getInstance()
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
 
     private function check()
     {
@@ -63,13 +56,8 @@ class DatabaseFacade extends DatabaseAbstract
         // $this->check();
         // $default = $this->config->get('default');
         $this->getConfig();
-        if (!static::$database) {
-            try {
-                $ref = new ReflectionClass($this->databases['mysql']);
-                static::$database = $ref->newInstance();
-            } catch (Throwable $e) {
-                throw new RuntimeException($e->getMessage());
-            }
+        if (!static::$database instanceof DatabaseInterface) {
+            static::$database = new $this->databases['mysql'];
         }
         static::$database->connect(new SplArray($this->config));
         return call_user_func([static::$database, __FUNCTION__], $query);

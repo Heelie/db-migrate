@@ -1,16 +1,16 @@
 <?php
 
-namespace EasySwoole\Migrate\Utility;
+namespace EasySwoole\DatabaseMigrate\Utility;
 
 use DateTime;
 use DateTimeZone;
-use EasySwoole\Migrate\Config\Config;
-use EasySwoole\Migrate\Validate\Validator;
+use EasySwoole\DatabaseMigrate\Config\Config;
+use EasySwoole\DatabaseMigrate\Validate\Validator;
 use Throwable;
 
 /**
  * Class Util
- * @package EasySwoole\Migrate\Utility
+ * @package EasySwoole\DatabaseMigrate\Utility
  * @author heelie.hj@gmail.com
  * @date 2020/8/22 21:28:02
  */
@@ -47,7 +47,7 @@ class Util
     {
         $result = [];
         foreach ($array as $key => $value) {
-            if (isset($value[$indexKey])){
+            if (isset($value[$indexKey])) {
                 $result[$value[$indexKey]][] = $value;
             }
         }

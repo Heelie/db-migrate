@@ -1,6 +1,6 @@
 <?php
 
-namespace EasySwoole\Migrate\Command\Migrate;
+namespace EasySwoole\DatabaseMigrate\Command\Migrate;
 
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\CommandInterface;
@@ -9,12 +9,12 @@ use EasySwoole\DDL\Blueprint\Create\Table as CreateTable;
 use EasySwoole\DDL\DDLBuilder;
 use EasySwoole\DDL\Enum\Character;
 use EasySwoole\DDL\Enum\Engine;
-use EasySwoole\Migrate\Command\AbstractInterface\CommandAbstract;
-use EasySwoole\Migrate\Command\MigrateCommand;
-use EasySwoole\Migrate\Config\Config;
-use EasySwoole\Migrate\Databases\DatabaseFacade;
-use EasySwoole\Migrate\Utility\Util;
-use EasySwoole\Migrate\Validate\Validator;
+use EasySwoole\DatabaseMigrate\Command\AbstractInterface\CommandAbstract;
+use EasySwoole\DatabaseMigrate\Command\MigrateCommand;
+use EasySwoole\DatabaseMigrate\Config\Config;
+use EasySwoole\DatabaseMigrate\Databases\DatabaseFacade;
+use EasySwoole\DatabaseMigrate\Utility\Util;
+use EasySwoole\DatabaseMigrate\Validate\Validator;
 use EasySwoole\Spl\SplArray;
 use EasySwoole\Utility\File;
 use Exception;
@@ -24,7 +24,7 @@ use Throwable;
 
 /**
  * Class SeedCommand
- * @package EasySwoole\Migrate\Command\Migrate
+ * @package EasySwoole\DatabaseMigrate\Command\Migrate
  * @author heelie.hj@gmail.com
  * @date 2020/9/19 00:30:36
  */
@@ -78,6 +78,7 @@ final class SeedCommand extends CommandAbstract
         $className = ucfirst(Util::lineConvertHump($className));
 
         $seederFilePath = Config::SEEDER_PATH . $className . '.php';
+
         if (!File::touchFile($seederFilePath, false)) {
             throw new RuntimeException(sprintf('seeder file "%s" create failed, file already exists or directory is not writable', $seederFilePath));
         }
